@@ -142,13 +142,14 @@
 
     .section-gap{ height: 8px; }
 
+    /* MARKS TABLE */
     .marks th{
       background: var(--accent2);
       border: 1px solid var(--border);
       padding: 7px 6px;
       font-weight: 900;
       text-align: center;
-      font-size: 11px;
+      font-size: 10px;
       color: #1a0b00;
       letter-spacing: 0.2px;
     }
@@ -157,13 +158,14 @@
       border: 1px solid var(--border);
       padding: 6px 6px;
       text-align: center;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text);
     }
 
     .marks .subj{
       text-align: left;
       font-weight: 800;
+      font-size: 10px;
     }
 
     .marks tbody tr:nth-child(even){
@@ -245,20 +247,48 @@
       text-align: center;
       font-size: 10px;
     }
+
+    /* OVERALL % small block */
+    .overall-wrap{
+      width: 100%;
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    .overall-box{
+      display: inline-block;
+      border: 1px solid var(--border);
+      background: #E0F2FE;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 900;
+      color: var(--header1);
+      font-size: 11px;
+    }
+
+    .overall-box span{
+      color: var(--header2);
+    }
   </style>
 </head>
 
 <body>
   @php
+    // support old controller (only $result) + new controller ($half, $annual)
     $extra = $extra ?? null;
 
-    $attendance = $extra->attendance ?? ($result->attendance ?? '-');
+    // If controller hasn't sent $annual/$half yet, we fallback:
+    $annual = $annual ?? ($result ?? null);
+    $half   = $half ?? null;
+
+    // helpers
+    $attendance = $extra->attendance ?? ($annual->attendance ?? ($result->attendance ?? '-'));
 
     $promotedTo = $extra->promoted_to_class
-      ?? ($result->promoted_to ?? ($result->promoted_to_class ?? '-'));
+      ?? ($annual->promoted_to ?? ($annual->promoted_to_class ?? ($result->promoted_to_class ?? '-')));
 
     $remarks = $extra->class_teacher_remarks
-      ?? ($result->remarks ?? ($result->class_teacher_remarks ?? '-'));
+      ?? ($annual->remarks ?? ($annual->class_teacher_remarks ?? ($result->class_teacher_remarks ?? '-')));
 
     // Co-scholastic from extras
     $disciplineT1 = $extra->discipline_term1 ?? '-';
@@ -272,17 +302,49 @@
 
     $hpT1 = $extra->health_physical_term1 ?? '-';
     $hpT2 = $extra->health_physical_term2 ?? '-';
+
+    // grade calculator
+    $calcGrade = function($marks, $max) {
+        $marks = (float)($marks ?? 0);
+        $max   = (float)($max ?? 0);
+        if ($max <= 0) return '-';
+        $p = ($marks / $max) * 100;
+
+        if ($p >= 91) return 'A1';
+        if ($p >= 81) return 'A2';
+        if ($p >= 71) return 'B1';
+        if ($p >= 61) return 'B2';
+        if ($p >= 51) return 'C1';
+        if ($p >= 41) return 'C2';
+        if ($p >= 33) return 'D';
+        return 'E';
+    };
+
+    // merge subject list (half + annual) so both show
+    $subNames = collect();
+
+    if($half && $half->subjects) {
+      $subNames = $subNames->merge($half->subjects->pluck('subject'));
+    }
+    if($annual && $annual->subjects) {
+      $subNames = $subNames->merge($annual->subjects->pluck('subject'));
+    }
+
+    // unique & clean
+    $subNames = $subNames->filter()->map(fn($x)=>trim((string)$x))->filter()->unique()->values();
+
+    $totalHalf=0; $maxHalf=0;
+    $totalAnnual=0; $maxAnnual=0;
   @endphp
 
   <div class="sheet">
 
-    <!-- HEADER -->
+    <!-- HEADER (RESTORED) -->
     <div class="header">
       <table class="header-table">
         <tr>
           <td class="header-logo">
             @php $logoPath = public_path('images/school-logo.png'); @endphp
-
             @if(file_exists($logoPath))
               <img src="{{ $logoPath }}" alt="School Logo">
             @else
@@ -308,16 +370,13 @@
     <div class="titlebar">
       Academic Performance (Session:
       {{
-        $result->session
-        ?? (
-            is_numeric($result->year ?? null)
-              ? ((int)$result->year - 1) . '-' . (int)$result->year
-              : ($result->year ?? '2025-2026')
-          )
+        is_numeric($annual->year ?? null)
+          ? ((int)$annual->year - 1) . '-' . (int)$annual->year
+          : ($annual->year ?? ($half->year ?? '2025-2026'))
       }})
     </div>
 
-    <!-- INFO -->
+    <!-- INFO (RESTORED: Mother, DOB, PHOTO) -->
     <table class="info">
       <tr>
         <td class="label">Student's Name</td>
@@ -338,7 +397,7 @@
                   if (file_exists($photoFile)) {
                       $ext = strtolower(pathinfo($photoFile, PATHINFO_EXTENSION));
 
-                      if (in_array($ext, ['jpg', 'jpeg', 'png'])) {
+                      if (in_array($ext, ['jpg', 'jpeg', 'png','webp'])) {
                           $data = file_get_contents($photoFile);
                           $mime = ($ext === 'jpg') ? 'jpeg' : $ext;
                           $photoBase64 = "data:image/{$mime};base64," . base64_encode($data);
@@ -376,64 +435,121 @@
 
       <tr>
         <td class="label">Attendance</td>
-        <td colspan="3">{{ $attendance }}(IN DAYS)</td>
+        <td colspan="3">{{ $attendance }} (IN DAYS)</td>
       </tr>
     </table>
 
     <div class="section-gap"></div>
 
-    <!-- MARKS -->
+    <!-- MARKS (Half + Annual with Grades) -->
     <table class="marks">
       <thead>
         <tr>
-          <th style="width:50%;">SUBJECT</th>
-          <th style="width:25%;">MARKS</th>
-          <th style="width:25%;">MAX</th>
+          <th rowspan="2" style="width:28%;">SUBJECT</th>
+          <th colspan="3" style="width:36%;">HALF YEARLY</th>
+          <th colspan="3" style="width:36%;">ANNUAL</th>
+        </tr>
+        <tr>
+          <th>Marks</th><th>Max</th><th>Grade</th>
+          <th>Marks</th><th>Max</th><th>Grade</th>
         </tr>
       </thead>
-      <tbody>
-        @php $total = 0; $maxTotal = 0; @endphp
 
-        @foreach(($result->subjects ?? []) as $s)
+      <tbody>
+        @foreach($subNames as $subName)
           @php
-            $m = (int)($s->marks ?? 0);
-            $mx = (int)($s->max_marks ?? 100);
-            $total += $m;
-            $maxTotal += $mx;
+            $hRow = $half?->subjects?->firstWhere('subject', $subName);
+            $aRow = $annual?->subjects?->firstWhere('subject', $subName);
+
+            $hm  = (int)($hRow->marks ?? 0);
+            $hmx = (int)($hRow->max_marks ?? 0);
+
+            $am  = (int)($aRow->marks ?? 0);
+            $amx = (int)($aRow->max_marks ?? 0);
+
+            $totalHalf  += $hm;
+            $maxHalf    += $hmx;
+
+            $totalAnnual += $am;
+            $maxAnnual   += $amx;
           @endphp
+
           <tr>
-            <td class="subj">{{ $s->subject ?? '-' }}</td>
-            <td>{{ $m }}</td>
-            <td>{{ $mx }}</td>
+            <td class="subj">{{ $subName }}</td>
+
+            <td>{{ $half ? $hm : '-' }}</td>
+            <td>{{ $half ? $hmx : '-' }}</td>
+            <td>{{ $half ? $calcGrade($hm, $hmx) : '-' }}</td>
+
+            <td>{{ $annual ? $am : '-' }}</td>
+            <td>{{ $annual ? $amx : '-' }}</td>
+            <td>{{ $annual ? $calcGrade($am, $amx) : '-' }}</td>
           </tr>
         @endforeach
 
         <tr class="total-row">
           <td class="subj">TOTAL</td>
-          <td>{{ $total }}</td>
-          <td>{{ $maxTotal }}</td>
+
+          <td>{{ $half ? $totalHalf : '-' }}</td>
+          <td>{{ $half ? $maxHalf : '-' }}</td>
+          <td>-</td>
+
+          <td>{{ $annual ? $totalAnnual : '-' }}</td>
+          <td>{{ $annual ? $maxAnnual : '-' }}</td>
+          <td>-</td>
         </tr>
       </tbody>
     </table>
 
     <div class="section-gap"></div>
 
-    <!-- SUMMARY -->
+    <!-- SUMMARY (keeps PASS/FAIL) -->
     <table class="summary">
       <tr>
-        <td class="label2">Total</td>
-        <td class="value-strong">{{ $total }} / {{ $maxTotal }}</td>
-
-        <td class="label2">Percentage</td>
+        <td class="label2">Annual %</td>
         <td class="value-strong">
-          @php $percentage = $maxTotal > 0 ? round(($total / $maxTotal) * 100, 2) : 0; @endphp
-          {{ $result->percentage ?? $percentage }}%
+          @php
+            $annualPerc = $maxAnnual > 0 ? round(($totalAnnual / $maxAnnual) * 100, 2) : 0;
+          @endphp
+          {{ $annual->percentage ?? $annualPerc }}%
         </td>
 
         <td class="label2">Result</td>
-        <td class="value-strong">{{ strtoupper($result->status ?? 'PASS') }}</td>
+        <td class="value-strong">
+          {{ strtoupper($annual->status ?? ($annualPerc >= 33 ? 'PASS' : 'FAIL')) }}
+        </td>
+
+        <td class="label2">Half %</td>
+        <td class="value-strong">
+          @php
+            $halfPerc = $maxHalf > 0 ? round(($totalHalf / $maxHalf) * 100, 2) : 0;
+          @endphp
+          {{ $half ? ($half->percentage ?? $halfPerc) . '%' : '-' }}
+        </td>
       </tr>
     </table>
+
+    @php
+      // ✅ Overall % (Weighted by total marks)
+      $annualPerc2 = $maxAnnual > 0 ? round(($totalAnnual / $maxAnnual) * 100, 2) : 0;
+      $halfPerc2   = $maxHalf > 0 ? round(($totalHalf / $maxHalf) * 100, 2) : 0;
+
+      if ($maxHalf > 0 && $maxAnnual > 0) {
+          $overallPerc = round((($totalHalf + $totalAnnual) / ($maxHalf + $maxAnnual)) * 100, 2);
+      } elseif ($maxAnnual > 0) {
+          $overallPerc = $annualPerc2;
+      } elseif ($maxHalf > 0) {
+          $overallPerc = $halfPerc2;
+      } else {
+          $overallPerc = 0;
+      }
+    @endphp
+
+    <div class="overall-wrap">
+      <div class="overall-box">
+        Overall %: <span>{{ $overallPerc }}%</span>
+      </div>
+    </div>
 
     <div class="section-gap"></div>
 
@@ -472,7 +588,7 @@
 
     <div class="section-gap"></div>
 
-    <!-- FOOTER -->
+    <!-- FOOTER (signs blank as you wanted) -->
     <table class="footer">
       <tr>
         <td class="footer-left" style="width:55%;">
@@ -487,8 +603,8 @@
         </td>
 
         <td class="footer-mid" style="width:20%;">
-          <div><b>Date:</b> {{ $result->result_date ?? now()->format('d/m/Y') }}</div>
-          <div style="margin-top:10px;"><b>Result:</b> {{ strtoupper($result->status ?? 'PASS') }}</div>
+          <div><b>Date:</b> {{ now()->format('d/m/Y') }}</div>
+          <div style="margin-top:10px;"><b>Result:</b> {{ strtoupper($annual->status ?? 'PASS') }}</div>
         </td>
 
         <td class="footer-right" style="width:25%;">

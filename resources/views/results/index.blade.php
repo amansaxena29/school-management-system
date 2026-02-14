@@ -1,244 +1,322 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="page">
-    <div class="wrap">
-
-        {{-- Alerts --}}
-        @if(session('success'))
-            <div class="alert success">
-                <span class="icon">✅</span>
-                <div>
-                    <div class="ttl">Success</div>
-                    <div class="txt">{{ session('success') }}</div>
-                </div>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert error">
-                <span class="icon">⚠️</span>
-                <div>
-                    <div class="ttl">Error</div>
-                    <div class="txt">{{ session('error') }}</div>
-                </div>
-            </div>
-        @endif
-
-        {{-- Card --}}
-        <div class="card">
-            <div class="card-head">
-                <div>
-                    <h2 class="title">📌 Upload / Update Result</h2>
-                    <p class="hint">Enter <b>Class</b> + <b>Roll No</b> to open the result form.</p>
-                </div>
-
-                <div class="badge">Result Panel</div>
-            </div>
-
-            <div class="divider"></div>
-
-            <form method="POST" action="{{ route('results.create') }}" class="form-grid">
-                @csrf
-
-                <div class="field">
-                    <label>Class</label>
-                    <input name="class" placeholder="e.g. 7" required>
-                    <small>Example: 1, 7, 10</small>
-                </div>
-
-                <div class="field">
-                    <label>Roll No</label>
-                    <input name="roll_no" placeholder="e.g. 12" required>
-                    <small>Example: 12, 31</small>
-                </div>
-
-                <div class="field">
-                    <label>Exam Name</label>
-                    <input name="exam_name" value="Final" required>
-                    <small>Example: Final / Mid-Term</small>
-                </div>
-
-                <div class="field">
-                    <label>Year</label>
-                    <input name="year" value="{{ date('Y') }}" required>
-                    <small>Example: {{ date('Y') }}</small>
-                </div>
-
-                <div class="actions">
-                    <button type="submit" class="btn">
-                        Open Result Form →
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="foot-note">
-            Tip: If student is not found, re-check <b>Class</b> and <b>Roll No</b>.
-        </div>
-
-    </div>
-</div>
-
 <style>
-/* IMPORTANT: this prevents overflow issues */
-*{ box-sizing:border-box; }
+  :root{
+    --border: rgba(255,255,255,0.10);
+    --blue:#38bdf8;
+    --indigo:#818cf8;
+    --green:#22c55e;
+    --red:#ef4444;
+    --shadow: 0 25px 70px rgba(0,0,0,0.35);
+  }
 
-/* Page background */
-.page{
-    min-height: calc(100vh - 40px);
-    padding: 26px 18px 60px;
-    background:
-        radial-gradient(circle at 15% 10%, rgba(34,211,238,0.14), transparent 45%),
-        radial-gradient(circle at 90% 15%, rgba(99,102,241,0.14), transparent 45%),
-        radial-gradient(circle at 55% 100%, rgba(16,185,129,0.10), transparent 55%);
-}
+  *{ box-sizing:border-box; }
 
-/* Container */
-.wrap{
+  .rp-wrap{
     max-width: 980px;
     margin: 0 auto;
-}
+    padding: 26px 18px 60px;
+  }
 
-/* Alerts */
-.alert{
+  /* HERO */
+  .rp-hero{
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    padding: 22px 22px 18px;
+    background:
+      radial-gradient(900px 300px at 20% 10%, rgba(56,189,248,0.18), transparent 60%),
+      radial-gradient(700px 260px at 85% 30%, rgba(129,140,248,0.20), transparent 55%),
+      linear-gradient(180deg, rgba(15,23,42,0.92), rgba(2,6,23,0.92));
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .rp-hero::after{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.35), rgba(129,140,248,0.25), transparent 55%);
+    filter: blur(20px);
+    opacity: .45;
+    pointer-events:none;
+  }
+
+  .rp-head{
+    position: relative;
+    z-index: 1;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  .rp-title{
+    margin:0;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    background: linear-gradient(90deg, var(--blue), var(--indigo));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .rp-sub{
+    margin: 8px 0 0;
+    color: rgba(229,231,235,0.78);
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .rp-badge{
+    position: relative;
+    z-index: 1;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    color: rgba(229,231,235,0.92);
+    font-weight: 900;
+    font-size: 12px;
+    white-space: nowrap;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  }
+
+  /* ALERTS */
+  .alert{
+    margin-top: 14px;
     display:flex;
     gap: 12px;
     align-items:flex-start;
     padding: 12px 14px;
-    border-radius: 14px;
-    margin-bottom: 14px;
-    border: 1px solid transparent;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-    background: rgba(255,255,255,0.92);
-}
-.alert .icon{ font-size: 18px; line-height: 1; margin-top: 2px; }
-.alert .ttl{ font-weight: 900; margin-bottom: 2px; }
-.alert .txt{ color: #374151; font-weight: 600; font-size: 14px; }
-.alert.success{ border-color:#86efac; }
-.alert.error{ border-color:#fecaca; }
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.25);
+    color: rgba(229,231,235,0.92);
+  }
+  .alert .icon{ font-size: 18px; line-height: 1; margin-top: 2px; }
+  .alert .ttl{ font-weight: 900; margin-bottom: 2px; }
+  .alert .txt{ color: rgba(229,231,235,0.82); font-weight: 700; font-size: 13px; }
 
-/* Card */
-.card{
-    background: rgba(255,255,255,0.92);
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
+  .alert.success{
+    border-color: rgba(34,197,94,0.25);
+    background: rgba(34,197,94,0.12);
+    color: #bbf7d0;
+  }
+  .alert.error{
+    border-color: rgba(239,68,68,0.25);
+    background: rgba(239,68,68,0.12);
+    color: #fecaca;
+  }
+
+  /* CARD */
+  .rp-card{
+    margin-top: 16px;
+    border-radius: 22px;
+    overflow:hidden;
+    border: 1px solid rgba(255,255,255,0.10);
+    background:
+      radial-gradient(700px 260px at 15% 0%, rgba(56,189,248,0.10), transparent 55%),
+      linear-gradient(180deg, rgba(11,18,36,0.92), rgba(2,6,23,0.92));
+    box-shadow: 0 18px 60px rgba(0,0,0,0.35);
     padding: 18px;
-    box-shadow: 0 18px 50px rgba(0,0,0,0.10);
-    backdrop-filter: blur(10px);
-}
+    color: rgba(229,231,235,0.92);
+  }
 
-/* Header */
-.card-head{
+  .rp-card-head{
     display:flex;
-    justify-content: space-between;
+    justify-content:space-between;
     align-items:flex-start;
-    gap: 14px;
-}
-.title{
-    margin: 0;
-    font-size: 22px;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+
+  .rp-card-title{
+    margin:0;
+    font-size: 18px;
     font-weight: 900;
-    color:#111827;
-}
-.hint{
+    color: rgba(219,234,254,0.95);
+    letter-spacing: .2px;
+  }
+
+  .rp-card-hint{
     margin: 6px 0 0;
-    color:#6b7280;
-    font-weight: 600;
-    font-size: 14px;
-}
-.badge{
-    padding: 8px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(99,102,241,0.25);
-    background: rgba(99,102,241,0.10);
-    color:#3730a3;
-    font-weight: 900;
-    font-size: 12px;
-    white-space: nowrap;
-}
+    color: rgba(229,231,235,0.72);
+    font-weight: 700;
+    font-size: 13px;
+  }
 
-.divider{
+  .divider{
     height: 1px;
-    background: #e5e7eb;
+    background: rgba(255,255,255,0.08);
     margin: 14px 0 18px;
-}
+  }
 
-/* ✅ FIXED FORM GRID ALIGNMENT */
-.form-grid{
+  /* FORM */
+  .form-grid{
     display:grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px 18px; /* row gap, column gap */
-    align-items: start;
-}
+    gap: 16px 18px;
+    align-items:start;
+  }
 
-/* Field */
-.field{ min-width: 0; } /* ✅ allows inputs to shrink properly */
-.field label{
+  .field{ min-width:0; }
+
+  .field label{
     display:block;
     font-weight: 900;
-    color:#374151;
-    font-size: 14px;
+    color: rgba(229,231,235,0.85);
+    font-size: 12px;
+    letter-spacing: .2px;
     margin-bottom: 8px;
-}
-.field input{
+  }
+
+  .field input{
     width: 100%;
     max-width: 100%;
     display:block;
     padding: 12px 14px;
     border-radius: 14px;
-    border: 1px solid #d1d5db;
-    outline: none;
-    background: rgba(255,255,255,0.98);
+    border: 1px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.08);
+    color: #e5e7eb;
+    outline:none;
     font-size: 14px;
-}
-.field input:focus{
-    border-color:#6366f1;
-    box-shadow: 0 0 0 4px rgba(99,102,241,0.18);
-}
-.field small{
+    font-weight: 900;
+  }
+  .field input:focus{
+    border-color: rgba(56,189,248,0.5);
+    box-shadow: 0 0 0 5px rgba(56,189,248,0.10);
+  }
+
+  .field small{
     display:block;
     margin-top: 7px;
-    color:#9ca3af;
+    color: rgba(229,231,235,0.60);
     font-size: 12px;
     font-weight: 700;
-}
+  }
 
-/* Actions row */
-.actions{
+  .actions{
     grid-column: 1 / -1;
     display:flex;
     justify-content:flex-end;
-    margin-top: 8px;
-}
-.btn{
-    border: none;
-    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  .btn{
+    border:none;
+    cursor:pointer;
     padding: 12px 18px;
     border-radius: 14px;
     font-weight: 900;
-    color: #fff;
-    background: linear-gradient(90deg, #16a34a, #22c55e);
-    box-shadow: 0 14px 30px rgba(34,197,94,0.25);
-    min-width: 240px;
-}
-.btn:hover{ transform: translateY(-1px); filter: brightness(0.98); }
-.btn:active{ transform: translateY(0px); }
+    color: #020617;
+    background: linear-gradient(90deg, rgba(56,189,248,0.92), rgba(129,140,248,0.92));
+    box-shadow: 0 14px 30px rgba(56,189,248,0.22);
+    min-width: 260px;
+    transition: transform .2s ease, filter .2s ease;
+    white-space: nowrap;
+  }
+  .btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+  .btn:active{ transform: translateY(0px); }
 
-.foot-note{
+  .foot-note{
     margin-top: 12px;
-    color:#6b7280;
-    font-weight: 600;
+    color: rgba(229,231,235,0.72);
+    font-weight: 700;
     font-size: 13px;
-    text-align: center;
-}
+    text-align:center;
+  }
 
-/* Responsive */
-@media(max-width: 820px){
-    .card-head{ flex-direction: column; }
+  @media(max-width: 820px){
+    .rp-card-head{ flex-direction: column; }
     .form-grid{ grid-template-columns: 1fr; }
     .actions{ justify-content: stretch; }
-    .btn{ width: 100%; min-width: unset; }
-}
+    .btn{ width:100%; min-width: unset; }
+  }
 </style>
+
+<div class="rp-wrap">
+
+  <div class="rp-hero">
+    <div class="rp-head">
+      <div>
+        <h2 class="rp-title">📌 Upload / Update Result</h2>
+        <p class="rp-sub">Enter <b style="color:#e5e7eb;">Class</b> + <b style="color:#e5e7eb;">Roll No</b> to open the result form.</p>
+      </div>
+      <div class="rp-badge">Result Panel</div>
+    </div>
+  </div>
+
+  {{-- Alerts --}}
+  @if(session('success'))
+    <div class="alert success">
+      <span class="icon">✅</span>
+      <div>
+        <div class="ttl">Success</div>
+        <div class="txt">{{ session('success') }}</div>
+      </div>
+    </div>
+  @endif
+
+  @if(session('error'))
+    <div class="alert error">
+      <span class="icon">⚠️</span>
+      <div>
+        <div class="ttl">Error</div>
+        <div class="txt">{{ session('error') }}</div>
+      </div>
+    </div>
+  @endif
+
+  <div class="rp-card">
+    <div class="rp-card-head">
+      <div>
+        <h3 class="rp-card-title">Result Details</h3>
+        <p class="rp-card-hint">Class + Roll No match hona chahiye, tabhi student ka form open hoga.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <form method="POST" action="{{ route('results.create') }}" class="form-grid">
+      @csrf
+
+      <div class="field">
+        <label>Class</label>
+        <input name="class" placeholder="e.g. 7" required>
+        <small>Example: 1, 7, 10</small>
+      </div>
+
+      <div class="field">
+        <label>Roll No</label>
+        <input name="roll_no" placeholder="e.g. 12" required>
+        <small>Example: 12, 31</small>
+      </div>
+
+      <div class="field">
+        <label>Exam Name</label>
+        <input name="exam_name" value="Final" required>
+        <small>Example: Final / Mid-Term</small>
+      </div>
+
+      <div class="field">
+        <label>Year</label>
+        <input name="year" value="{{ date('Y') }}" required>
+        <small>Example: {{ date('Y') }}</small>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn">Open Result Form →</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="foot-note">
+    Tip: If student not found, Class aur Roll No re-check karo.
+  </div>
+
+</div>
 @endsection

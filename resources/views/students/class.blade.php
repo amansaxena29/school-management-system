@@ -61,6 +61,41 @@ tbody tr td:last-child {
     border-radius: 0 16px 16px 0;
 }
 
+/* ✅ PHOTO + NAME CELL */
+.name-cell{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow:hidden;
+    flex: 0 0 36px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(56,189,248,0.12);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight: 800;
+    color: #93c5fd;
+    text-transform: uppercase;
+}
+
+.avatar img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    display:block;
+}
+
+.student-name{
+    font-weight: 700;
+    color: #e5e7eb;
+}
+
 /* ACTION BUTTONS */
 .action-wrap {
     display: flex;
@@ -132,7 +167,6 @@ tbody tr td:last-child {
     box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
 }
 
-
 .search-box{
     position: relative;
     width: 420px;
@@ -158,7 +192,6 @@ tbody tr td:last-child {
 .clear-btn:hover{
     background: rgba(239,68,68,0.35);
 }
-
 </style>
 
 <div class="page-wrap">
@@ -168,102 +201,121 @@ tbody tr td:last-child {
     <div class="glass-box">
         <h1 class="title">📘 Class {{ $class }} — Students</h1>
 
-       <!-- SEARCH BAR -->
-<div class="search-row">
-    <div class="search-box">
-        <input
-            type="text"
-            id="studentSearch"
-            class="search-input"
-            placeholder="Search here"
-            onkeyup="searchStudents()"
-        >
+        <!-- SEARCH BAR -->
+        <div class="search-row">
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="studentSearch"
+                    class="search-input"
+                    placeholder="Search here"
+                    onkeyup="searchStudents()"
+                >
 
-        <button
-            type="button"
-            class="clear-btn"
-            onclick="clearSearch()"
-            title="Clear search"
-        >
-            ✕
-        </button>
-    </div>
-</div>
-
+                <button
+                    type="button"
+                    class="clear-btn"
+                    onclick="clearSearch()"
+                    title="Clear search"
+                >
+                    ✕
+                </button>
+            </div>
+        </div>
 
         @if(session('success'))
-    <div style="
-        margin: 18px 0 22px;
-        padding: 14px 18px;
-        border-radius: 14px;
-        background: rgba(34,197,94,0.15);
-        border: 1px solid rgba(34,197,94,0.35);
-        color: #bbf7d0;
-        font-weight: 700;
-    ">
-        ✅ {{ session('success') }}
-    </div>
-@endif
-
+            <div style="
+                margin: 18px 0 22px;
+                padding: 14px 18px;
+                border-radius: 14px;
+                background: rgba(34,197,94,0.15);
+                border: 1px solid rgba(34,197,94,0.35);
+                color: #bbf7d0;
+                font-weight: 700;
+            ">
+                ✅ {{ session('success') }}
+            </div>
+        @endif
 
         @if($students->isEmpty())
             <p class="empty-text">No students found in this class.</p>
         @else
             <table>
                 <thead>
-                   <tr>
-                    <th>Name</th>
-                    <th>Roll No</th>
-                    <th>Phone</th>
-                    <th>Father</th>
-                    <th>Mother</th>
-                    <th>Religion</th>
-                    <th>Citizenship</th>
-                    <th>Address</th>
-                    <th>Action</th>
-                </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Roll No</th>
+                        <th>Phone</th>
+                        <th>Father</th>
+                        <th>Mother</th>
+                        <th>Religion</th>
+                        <th>Citizenship</th>
+                        <th>Address</th>
+                        <th>Action</th>
+                    </tr>
                 </thead>
 
                 <tbody>
                     @foreach($students as $student)
-                    <tr>
-    <td>{{ $student->name }}</td>
-    <td>{{ $student->roll_no }}</td>
-    <td>{{ $student->phone }}</td>
+                        @php
+                            // ✅ photo_path DB column exists as per your table
+                            $photoUrl = !empty($student->photo_path) ? asset($student->photo_path) : null;
 
-    <td>{{ $student->father_name ?? '-' }}</td>
-    <td>{{ $student->mother_name ?? '-' }}</td>
-    <td>{{ $student->religion ?? '-' }}</td>
-    <td>{{ $student->citizenship ?? '-' }}</td>
+                            // initials fallback
+                            $initials = '';
+                            if (!empty($student->name)) {
+                                $parts = preg_split('/\s+/', trim($student->name));
+                                $initials = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
+                                $initials = trim($initials) ?: strtoupper(substr($student->name, 0, 1));
+                            }
+                        @endphp
 
-    <td style="max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-        {{ $student->address ?? '-' }}
-    </td>
+                        <tr>
+                            <td>
+                                <div class="name-cell">
+                                    <div class="avatar">
+                                        @if($photoUrl)
+                                            <img src="{{ $photoUrl }}" alt="Photo"
+                                                 onerror="this.onerror=null; this.remove(); this.parentElement.innerText='{{ $initials ?: 'S' }}';">
+                                        @else
+                                            {{ $initials ?: 'S' }}
+                                        @endif
+                                    </div>
 
-    <td>
-        <div class="action-wrap">
-            <a href="{{ route('students.edit', $student) }}" class="btn edit">
-                Edit
-            </a>
+                                    <div class="student-name">{{ $student->name }}</div>
+                                </div>
+                            </td>
 
-            <form method="POST" action="{{ route('students.destroy', $student) }}">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn delete">
-                    Delete
-                </button>
-            </form>
-        </div>
-    </td>
-</tr>
+                            <td>{{ $student->roll_no }}</td>
+                            <td>{{ $student->phone }}</td>
 
+                            <td>{{ $student->father_name ?? '-' }}</td>
+                            <td>{{ $student->mother_name ?? '-' }}</td>
+                            <td>{{ $student->religion ?? '-' }}</td>
+                            <td>{{ $student->citizenship ?? '-' }}</td>
+
+                            <td style="max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ $student->address ?? '-' }}
+                            </td>
+
+                            <td>
+                                <div class="action-wrap">
+                                    <a href="{{ route('students.edit', $student) }}" class="btn edit">Edit</a>
+
+                                    <form method="POST" action="{{ route('students.destroy', $student) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn delete">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
         @endif
     </div>
 </div>
-
 
 <script>
 function searchStudents() {
@@ -281,7 +333,6 @@ function searchStudents() {
         rows[i].style.display = rowText.includes(filter) ? '' : 'none';
     }
 
-    // show / hide clear button
     clearBtn.style.display = filter ? 'flex' : 'none';
 }
 
@@ -296,6 +347,5 @@ function clearSearch() {
     rows.forEach(row => row.style.display = '');
 }
 </script>
-
 
 </x-app-layout>

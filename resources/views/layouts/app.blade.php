@@ -79,8 +79,9 @@
         <a href="{{ route('students.index') }}" class="{{ request()->routeIs('students.*') ? 'active' : '' }}">Students</a>
         <a href="{{ route('teachers.index') }}" class="{{ request()->routeIs('teachers.*') ? 'active' : '' }}">Teachers</a>
         <a href="{{ route('fees.index') }}" class="{{ request()->routeIs('fees.*') ? 'active' : '' }}">Fees</a>
-        <a href="{{ url('/attendance') }}" class="{{ request()->is('attendance*') ? 'active' : '' }}">Attendance</a>
-        <a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}">Results</a>
+        <a href="{{ url('/attendance') }}" class="{{ request()->is('attendance*') ? 'active' : '' }}">Attendances</a>
+        <a href="{{ route('exams.index') }}"class="{{ request()->routeIs('exams.*') ? 'active' : '' }}">Examinations</a>
+        {{-- <a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}">Results</a> --}}
         <a href="{{ route('marksheets.index') }}" class="{{ request()->routeIs('marksheets.*') ? 'active' : '' }}">Marksheets</a>
         <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }} sidebar-link">Profile</a>
 

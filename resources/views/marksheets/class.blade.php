@@ -42,10 +42,20 @@
                         <td style="padding:12px;border-bottom:1px solid #f1f5f9; display:flex; gap:10px; flex-wrap:wrap;">
 
                             {{-- Generate PDF (PASS student + class) --}}
-                            <a href="{{ route('marksheets.generate', [$st->id, $class]) }}"
-                            style="display:inline-block;text-decoration:none;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#4a148c,#8e24aa);color:#fff;font-weight:900;">
-                                ⬇ Generate PDF
-                            </a>
+                           <form method="GET" action="{{ route('marksheets.generate', [$st->id, $class]) }}" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+
+                                <select name="year" style="padding:6px;border-radius:8px;border:1px solid #ccc;">
+                                    <option value="">Latest</option>
+                                    <option value="2026">2025-2026</option>
+                                    <option value="2025">2024-2025</option>
+                                </select>
+
+                                <button type="submit"
+                                    style="display:inline-block;text-decoration:none;padding:10px 14px;border-radius:12px;background:linear-gradient(135deg,#4a148c,#8e24aa);color:#fff;font-weight:900;border:none;">
+                                    ⬇ Generate PDF
+                                </button>
+                            </form>
+
 
                             <a href="{{ route('marksheets.extra.edit', [$st->id, $class]) }}"
                             style="background:#0f172a;color:#fff;padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:600;">

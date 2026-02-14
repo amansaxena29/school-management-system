@@ -10,6 +10,7 @@ use App\Http\Controllers\TeacherAuthController;
 use App\Http\Controllers\PublicResultController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\MarksheetController;
+use App\Http\Controllers\ExaminationController;
 
 Route::get('/', function () {
     return view('public.home');
@@ -115,6 +116,31 @@ Route::post('/marksheets/{student}/save-extra/{class}', [MarksheetController::cl
 
 // Main generate route (use this in UI)
 Route::get('/marksheets/{student}/generate/{class}', [MarksheetController::class, 'generatePdf'])->name('marksheets.generate');
+
+Route::get('/marksheets/{student}/attendance-summary/{class}', [MarksheetController::class, 'attendanceSummary'])
+    ->name('marksheets.attendanceSummary');
+
+
+// Examination module
+Route::get('/examinations', [ExaminationController::class, 'index'])->name('exams.index');
+
+Route::get('/examinations/{type}', [ExaminationController::class, 'classes'])
+    ->name('exams.classes');
+
+Route::get('/examinations/{type}/class/{class}', [ExaminationController::class, 'students'])
+    ->name('exams.students');
+
+Route::get('/examinations/{type}/class/{class}/student/{student}', [ExaminationController::class, 'entry'])
+    ->name('exams.entry');
+
+// Optional: Subject template per class/exam
+Route::get('/examinations/{type}/class/{class}/subjects', [ExaminationController::class, 'editSubjects'])
+    ->name('exams.subjects.edit');
+
+Route::post('/examinations/{type}/class/{class}/subjects', [ExaminationController::class, 'saveSubjects'])
+    ->name('exams.subjects.save');
+
+
 });
 
 require __DIR__.'/auth.php';

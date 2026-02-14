@@ -13,6 +13,7 @@ class ResultSubjectMark extends Model
         'subject',
         'marks',
         'max_marks',
+        'grade',
     ];
 
     public function result()
