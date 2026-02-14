@@ -321,7 +321,7 @@
     </div>
 
     <div class="mk-actions">
-      <a class="mk-btn" href="{{ route('results.index') }}">↩ Results</a>
+      {{-- <a class="mk-btn" href="{{ route('results.index') }}">↩ Results</a> --}}
       <a class="mk-btn" href="{{ route('dashboard') }}">🏠 Dashboard</a>
     </div>
   </div>

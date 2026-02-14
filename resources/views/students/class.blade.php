@@ -1,74 +1,189 @@
 <x-app-layout>
-
 <style>
-.page-wrap {
-    padding: 50px;
-}
+  :root{
+    --bg:#0b1220;
+    --glass: rgba(15,23,42,0.85);
+    --stroke: rgba(255,255,255,0.12);
+    --text:#e5e7eb;
+    --muted: rgba(229,231,235,0.75);
+    --accent1:#38bdf8;
+    --accent2:#818cf8;
+    --danger:#ef4444;
+    --success:#22c55e;
+  }
 
-/* GLASS CONTAINER */
-.glass-box {
-    background: rgba(15,23,42,0.85);
-    backdrop-filter: blur(18px);
-    border-radius: 28px;
-    padding: 45px;
-    box-shadow: 0 40px 120px rgba(0,0,0,0.6);
-    color: #e5e7eb;
-}
+  *{ box-sizing:border-box; }
 
-/* TITLE */
-.title {
-    font-size: 2.2rem;
+  .page-wrap{
+    padding: 28px;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  /* BACK BUTTON */
+  .back-btn{
+    background: var(--accent1);
+    color:#fff;
+    padding: 10px 18px;
+    border-radius: 12px;
     font-weight: 800;
-    margin-bottom: 30px;
-    background: linear-gradient(90deg, #38bdf8, #818cf8);
-    -webkit-background-clip: text;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom: 14px;
+  }
+
+  /* GLASS CONTAINER */
+  .glass-box{
+    background: var(--glass);
+    backdrop-filter: blur(18px);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+    color: var(--text);
+    border: 1px solid var(--stroke);
+  }
+
+  /* HEADER ROW */
+  .head-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap: 14px;
+    flex-wrap:wrap;
+    margin-bottom: 14px;
+  }
+
+  .title{
+    margin:0;
+    font-size: 26px;
+    font-weight: 950;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    -webkit-background-clip:text;
     -webkit-text-fill-color: transparent;
-}
+    line-height: 1.2;
+  }
 
-/* TABLE */
-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 14px;
-}
-
-thead th {
-    text-align: left;
-    padding: 16px 22px;
-    color: #93c5fd;
+  .sub{
+    margin: 6px 0 0;
+    color: var(--muted);
     font-weight: 700;
-}
+    font-size: 14px;
+  }
 
-tbody tr {
-    background: rgba(255,255,255,0.05);
-    transition: all 0.25s ease;
-}
+  /* SEARCH */
+  .search-row{
+    display:flex;
+    justify-content:flex-end;
+    width: 100%;
+  }
 
-tbody tr:hover {
+  .search-box{
+    position: relative;
+    width: 420px;
+    max-width: 100%;
+  }
+
+  .search-input{
+    width:100%;
+    padding: 12px 44px 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.18);
     background: rgba(255,255,255,0.08);
-}
+    color: var(--text);
+    outline: none;
+    font-weight: 800;
+  }
 
-tbody td {
-    padding: 18px 22px;
+  .search-input::placeholder{ color: rgba(229,231,235,0.65); font-weight: 700; }
+
+  .search-input:focus{
+    border-color: rgba(56,189,248,0.8);
+    box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
+  }
+
+  .clear-btn{
+    position:absolute;
+    right: 10px;
+    top:50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border:none;
+    cursor:pointer;
+    background: rgba(255,255,255,0.15);
+    color: var(--text);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    font-weight: 900;
+  }
+  .clear-btn:hover{ background: rgba(239,68,68,0.35); }
+
+  /* SUCCESS ALERT */
+  .success{
+    margin: 14px 0 16px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(34,197,94,0.14);
+    border: 1px solid rgba(34,197,94,0.32);
+    color: #bbf7d0;
+    font-weight: 800;
+  }
+
+  /* TABLE WRAP (responsive) */
+  .table-wrap{
+    width: 100%;
+    overflow:auto;               /* ✅ makes table scroll on small screens */
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+  }
+
+  table{
+    width: 100%;
+    min-width: 1050px;           /* ✅ keep columns readable, scroll on mobile */
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    padding: 12px;
+  }
+
+  thead th{
+    text-align:left;
+    padding: 14px 18px;
+    color: #93c5fd;
+    font-weight: 900;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  tbody tr{
+    background: rgba(255,255,255,0.05);
+    transition: all .2s ease;
+  }
+  tbody tr:hover{ background: rgba(255,255,255,0.08); }
+
+  tbody td{
+    padding: 16px 18px;
     vertical-align: middle;
-}
+    font-weight: 700;
+    font-size: 13px;
+  }
 
-tbody tr td:first-child {
-    border-radius: 16px 0 0 16px;
-}
+  tbody tr td:first-child{ border-radius: 14px 0 0 14px; }
+  tbody tr td:last-child{ border-radius: 0 14px 14px 0; }
 
-tbody tr td:last-child {
-    border-radius: 0 16px 16px 0;
-}
-
-/* ✅ PHOTO + NAME CELL */
-.name-cell{
+  .name-cell{
     display:flex;
     align-items:center;
-    gap:12px;
-}
+    gap: 12px;
+    min-width: 220px;
+  }
 
-.avatar{
+  .avatar{
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -79,273 +194,309 @@ tbody tr td:last-child {
     display:flex;
     align-items:center;
     justify-content:center;
-    font-weight: 800;
+    font-weight: 900;
     color: #93c5fd;
     text-transform: uppercase;
-}
+  }
+  .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-.avatar img{
-    width:100%;
-    height:100%;
-    object-fit: cover;
-    display:block;
-}
+  .student-name{ font-weight: 900; color: var(--text); }
 
-.student-name{
-    font-weight: 700;
-    color: #e5e7eb;
-}
+  .addr{
+    max-width: 260px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-/* ACTION BUTTONS */
-.action-wrap {
-    display: flex;
-    gap: 10px;
-}
-
-.btn {
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-}
-
-.edit {
-    background: #22c55e;
-    color: #022c22;
-    padding:5px 10px;
-}
-
-.delete {
-    background: #ef4444;
-    color: white;
-}
-
-/* BACK BUTTON */
-.back-btn {
-    background: #38bdf8;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-weight: 600;
-    text-decoration: none;
-    margin-bottom: 20px;
-    display: inline-block;
-}
-
-/* EMPTY STATE */
-.empty-text {
-    opacity: 0.7;
-    font-size: 16px;
-}
-
-/* SEARCH */
-.search-row{
+  .action-wrap{
     display:flex;
-    justify-content:flex-end;
-    margin: 12px 0 18px;
-}
+    gap: 10px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
 
-.search-input{
-    width: 420px;
-    max-width: 100%;
-    padding: 12px 14px;
+  .btn{
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 900;
+    text-decoration:none;
+    border:none;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    white-space: nowrap;
+  }
+  .edit{ background: var(--success); color:#032217; }
+  .delete{ background: var(--danger); color:#fff; }
+
+  .empty-text{ opacity: .75; font-weight: 800; }
+
+  /* =========================
+     MOBILE CARD VIEW
+     ========================= */
+  .cards{ display:none; margin-top: 12px; }
+  .st-card{
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+    margin-bottom: 12px;
+  }
+  .st-top{
+    display:flex;
+    gap: 12px;
+    align-items:center;
+    justify-content: space-between;
+  }
+  .st-left{
+    display:flex;
+    gap: 12px;
+    align-items:center;
+    min-width: 0;
+  }
+  .st-meta{
+    min-width: 0;
+  }
+  .st-name{
+    font-weight: 950;
+    color: var(--text);
+    margin:0;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  .st-roll{
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 13px;
+  }
+  .st-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    margin-top: 12px;
+  }
+  .kv{
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
     border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.08);
-    color: #e5e7eb;
-    outline: none;
-}
+    padding: 10px 12px;
+    min-width: 0;
+  }
+  .k{ font-size: 11px; color: rgba(229,231,235,0.70); font-weight: 900; }
+  .v{ margin-top: 4px; font-weight: 900; color: var(--text); font-size: 13px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; }
 
-.search-input::placeholder{
-    color: rgba(229,231,235,0.65);
-}
+  .st-actions{
+    display:flex;
+    gap: 10px;
+    flex-wrap:wrap;
+    margin-top: 12px;
+  }
+  .st-actions .btn{ flex: 1; }
 
-.search-input:focus{
-    border-color: rgba(56,189,248,0.7);
-    box-shadow: 0 0 0 4px rgba(56,189,248,0.12);
-}
+  /* RESPONSIVE BREAKPOINTS */
+  @media (max-width: 900px){
+    .page-wrap{ padding: 18px; }
+    .glass-box{ padding: 16px; border-radius: 18px; }
+    .title{ font-size: 22px; }
+  }
 
-.search-box{
-    position: relative;
-    width: 420px;
-    max-width: 100%;
-}
+  @media (max-width: 720px){
+    /* ✅ switch to cards */
+    .table-wrap{ display:none; }
+    .cards{ display:block; }
 
-.clear-btn{
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.15);
-    border: none;
-    color: #e5e7eb;
-    font-size: 14px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-}
+    .search-row{ justify-content: stretch; }
+    .search-box{ width: 100%; }
 
-.clear-btn:hover{
-    background: rgba(239,68,68,0.35);
-}
+    .st-grid{ grid-template-columns: 1fr; }
+  }
 </style>
 
 <div class="page-wrap">
-    <!-- Back Button -->
-    <a href="/students" class="back-btn">← Back to Students</a>
+  <a href="/students" class="back-btn">← Back to Students</a>
 
-    <div class="glass-box">
+  <div class="glass-box">
+    <div class="head-row">
+      <div>
         <h1 class="title">📘 Class {{ $class }} — Students</h1>
+        <p class="sub">Search and manage students. On mobile this becomes a card layout.</p>
+      </div>
 
-        <!-- SEARCH BAR -->
-        <div class="search-row">
-            <div class="search-box">
-                <input
-                    type="text"
-                    id="studentSearch"
-                    class="search-input"
-                    placeholder="Search here"
-                    onkeyup="searchStudents()"
-                >
-
-                <button
-                    type="button"
-                    class="clear-btn"
-                    onclick="clearSearch()"
-                    title="Clear search"
-                >
-                    ✕
-                </button>
-            </div>
+      <div class="search-row">
+        <div class="search-box">
+          <input type="text" id="studentSearch" class="search-input" placeholder="Search here..." onkeyup="searchStudents()">
+          <button type="button" class="clear-btn" onclick="clearSearch()" title="Clear">✕</button>
         </div>
-
-        @if(session('success'))
-            <div style="
-                margin: 18px 0 22px;
-                padding: 14px 18px;
-                border-radius: 14px;
-                background: rgba(34,197,94,0.15);
-                border: 1px solid rgba(34,197,94,0.35);
-                color: #bbf7d0;
-                font-weight: 700;
-            ">
-                ✅ {{ session('success') }}
-            </div>
-        @endif
-
-        @if($students->isEmpty())
-            <p class="empty-text">No students found in this class.</p>
-        @else
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Roll No</th>
-                        <th>Phone</th>
-                        <th>Father</th>
-                        <th>Mother</th>
-                        <th>Religion</th>
-                        <th>Citizenship</th>
-                        <th>Address</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach($students as $student)
-                        @php
-                            // ✅ photo_path DB column exists as per your table
-                            $photoUrl = !empty($student->photo_path) ? asset($student->photo_path) : null;
-
-                            // initials fallback
-                            $initials = '';
-                            if (!empty($student->name)) {
-                                $parts = preg_split('/\s+/', trim($student->name));
-                                $initials = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
-                                $initials = trim($initials) ?: strtoupper(substr($student->name, 0, 1));
-                            }
-                        @endphp
-
-                        <tr>
-                            <td>
-                                <div class="name-cell">
-                                    <div class="avatar">
-                                        @if($photoUrl)
-                                            <img src="{{ $photoUrl }}" alt="Photo"
-                                                 onerror="this.onerror=null; this.remove(); this.parentElement.innerText='{{ $initials ?: 'S' }}';">
-                                        @else
-                                            {{ $initials ?: 'S' }}
-                                        @endif
-                                    </div>
-
-                                    <div class="student-name">{{ $student->name }}</div>
-                                </div>
-                            </td>
-
-                            <td>{{ $student->roll_no }}</td>
-                            <td>{{ $student->phone }}</td>
-
-                            <td>{{ $student->father_name ?? '-' }}</td>
-                            <td>{{ $student->mother_name ?? '-' }}</td>
-                            <td>{{ $student->religion ?? '-' }}</td>
-                            <td>{{ $student->citizenship ?? '-' }}</td>
-
-                            <td style="max-width: 260px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                {{ $student->address ?? '-' }}
-                            </td>
-
-                            <td>
-                                <div class="action-wrap">
-                                    <a href="{{ route('students.edit', $student) }}" class="btn edit">Edit</a>
-
-                                    <form method="POST" action="{{ route('students.destroy', $student) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn delete">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
+      </div>
     </div>
+
+    @if(session('success'))
+      <div class="success">✅ {{ session('success') }}</div>
+    @endif
+
+    @if($students->isEmpty())
+      <p class="empty-text">No students found in this class.</p>
+    @else
+
+      {{-- ✅ TABLE VIEW (Desktop/Tablet) --}}
+      <div class="table-wrap">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Roll No</th>
+              <th>Phone</th>
+              <th>Father</th>
+              <th>Mother</th>
+              <th>Religion</th>
+              <th>Citizenship</th>
+              <th>Address</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @foreach($students as $student)
+              @php
+                $photoUrl = !empty($student->photo_path) ? asset($student->photo_path) : null;
+
+                $initials = '';
+                if (!empty($student->name)) {
+                  $parts = preg_split('/\s+/', trim($student->name));
+                  $initials = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
+                  $initials = trim($initials) ?: strtoupper(substr($student->name, 0, 1));
+                }
+              @endphp
+
+              <tr class="student-row">
+                <td>
+                  <div class="name-cell">
+                    <div class="avatar">
+                      @if($photoUrl)
+                        <img src="{{ $photoUrl }}" alt="Photo"
+                             onerror="this.onerror=null; this.remove(); this.parentElement.innerText='{{ $initials ?: 'S' }}';">
+                      @else
+                        {{ $initials ?: 'S' }}
+                      @endif
+                    </div>
+                    <div class="student-name">{{ $student->name }}</div>
+                  </div>
+                </td>
+                <td>{{ $student->roll_no }}</td>
+                <td>{{ $student->phone }}</td>
+                <td>{{ $student->father_name ?? '-' }}</td>
+                <td>{{ $student->mother_name ?? '-' }}</td>
+                <td>{{ $student->religion ?? '-' }}</td>
+                <td>{{ $student->citizenship ?? '-' }}</td>
+                <td class="addr">{{ $student->address ?? '-' }}</td>
+                <td>
+                  <div class="action-wrap">
+                    <a href="{{ route('students.edit', $student) }}" class="btn edit">Edit</a>
+                    <form method="POST" action="{{ route('students.destroy', $student) }}">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn delete">Delete</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+
+      {{-- ✅ CARD VIEW (Mobile) --}}
+      <div class="cards" id="studentCards">
+        @foreach($students as $student)
+          @php
+            $photoUrl = !empty($student->photo_path) ? asset($student->photo_path) : null;
+
+            $initials = '';
+            if (!empty($student->name)) {
+              $parts = preg_split('/\s+/', trim($student->name));
+              $initials = strtoupper(substr($parts[0] ?? '', 0, 1) . substr($parts[1] ?? '', 0, 1));
+              $initials = trim($initials) ?: strtoupper(substr($student->name, 0, 1));
+            }
+          @endphp
+
+          <div class="st-card student-card">
+            <div class="st-top">
+              <div class="st-left">
+                <div class="avatar">
+                  @if($photoUrl)
+                    <img src="{{ $photoUrl }}" alt="Photo"
+                         onerror="this.onerror=null; this.remove(); this.parentElement.innerText='{{ $initials ?: 'S' }}';">
+                  @else
+                    {{ $initials ?: 'S' }}
+                  @endif
+                </div>
+
+                <div class="st-meta">
+                  <p class="st-name">{{ $student->name }}</p>
+                  <p class="st-roll">Roll: {{ $student->roll_no ?? '-' }} • Phone: {{ $student->phone ?? '-' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="st-grid">
+              <div class="kv"><div class="k">Father</div><div class="v">{{ $student->father_name ?? '-' }}</div></div>
+              <div class="kv"><div class="k">Mother</div><div class="v">{{ $student->mother_name ?? '-' }}</div></div>
+              <div class="kv"><div class="k">Religion</div><div class="v">{{ $student->religion ?? '-' }}</div></div>
+              <div class="kv"><div class="k">Citizenship</div><div class="v">{{ $student->citizenship ?? '-' }}</div></div>
+              <div class="kv" style="grid-column:1/-1;">
+                <div class="k">Address</div>
+                <div class="v">{{ $student->address ?? '-' }}</div>
+              </div>
+            </div>
+
+            <div class="st-actions">
+              <a href="{{ route('students.edit', $student) }}" class="btn edit">Edit</a>
+              <form method="POST" action="{{ route('students.destroy', $student) }}" style="flex:1;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn delete" style="width:100%;">Delete</button>
+              </form>
+            </div>
+          </div>
+        @endforeach
+      </div>
+
+    @endif
+  </div>
 </div>
 
 <script>
-function searchStudents() {
+  function searchStudents(){
     const input = document.getElementById('studentSearch');
-    const filter = input.value.toLowerCase();
+    const q = (input.value || '').toLowerCase().trim();
     const clearBtn = document.querySelector('.clear-btn');
 
-    const tbody = document.querySelector('table tbody');
-    if (!tbody) return;
+    // table rows
+    document.querySelectorAll('#studentsTable tbody tr.student-row').forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
 
-    const rows = tbody.getElementsByTagName('tr');
+    // card items
+    document.querySelectorAll('#studentCards .student-card').forEach(card => {
+      card.style.display = card.innerText.toLowerCase().includes(q) ? '' : 'none';
+    });
 
-    for (let i = 0; i < rows.length; i++) {
-        const rowText = rows[i].innerText.toLowerCase();
-        rows[i].style.display = rowText.includes(filter) ? '' : 'none';
-    }
+    clearBtn.style.display = q ? 'flex' : 'none';
+  }
 
-    clearBtn.style.display = filter ? 'flex' : 'none';
-}
-
-function clearSearch() {
+  function clearSearch(){
     const input = document.getElementById('studentSearch');
     const clearBtn = document.querySelector('.clear-btn');
-
     input.value = '';
     clearBtn.style.display = 'none';
 
-    const rows = document.querySelectorAll('table tbody tr');
-    rows.forEach(row => row.style.display = '');
-}
+    document.querySelectorAll('#studentsTable tbody tr.student-row').forEach(r => r.style.display = '');
+    document.querySelectorAll('#studentCards .student-card').forEach(c => c.style.display = '');
+  }
 </script>
-
 </x-app-layout>

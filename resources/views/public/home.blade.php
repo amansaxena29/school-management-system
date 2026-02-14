@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My School - Modern Landing Page</title>
+  <title>Arya Public Academy</title>
+  <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* --- Global Styles --- */
@@ -286,13 +287,45 @@
       }
     }
 
+    .brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color: inherit;
+}
+
+.brand-logo{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  border-radius:10px; /* remove if you want sharp logo */
+}
+
+.brand-text{
+  font-weight:900;
+  font-size:28px;      /* match your design */
+  line-height:1;
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  .brand-text{ font-size:22px; }
+  .brand-logo{ width:34px; height:34px; }
+}
+
+
   </style>
 </head>
 <body>
 
   <!-- Navbar -->
   <nav>
-    <div class="logo">Arya Public Academy</div>
+    <a href="{{ url('/') }}" class="brand">
+  <img src="{{ asset('images/school-logo.png') }}" alt="Arya Public Academy" class="brand-logo">
+  <span class="brand-text">Arya Public Academy</span>
+</a>
+
     <ul>
      <li>
 
@@ -304,7 +337,7 @@
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#achievements">Achievements</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li><a href="{{ url('/result') }}">Result</a></li>
+      {{-- <li><a href="{{ url('/result') }}">Result</a></li> --}}
 
     </ul>
     <a href="/login" style="
@@ -385,7 +418,9 @@
 
   <!-- Footer -->
   <footer>
-    <p>© 2025 Arya Public Academy. All rights reserved.</p>
+    <p>© 2025 Arya Public Academy. All rights reserved.</p> <br>
+    <p> Contact Number : 8127515044 </p> <br>
+    <p> Kusmara, Jalaun (U.P)</p>
   </footer>
 
 </body>
