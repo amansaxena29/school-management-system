@@ -1,216 +1,208 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Attendance Sheet</title>
+@extends('layouts.app')
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+@section('content')
+<style>
+  /* IMPORTANT: Do NOT style body here, otherwise sidebar layout breaks */
+  .att-wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 22px 18px 60px;
+  }
 
-        .attendance-card {
-            background: #ffffff;
-            width: 90%;
-            max-width: 900px;
-            border-radius: 18px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-            padding: 30px;
-            animation: fadeIn 0.6s ease-in-out;
-        }
+  .att-bg{
+    border-radius: 26px;
+    padding: 22px;
+    background:
+      radial-gradient(900px 340px at 18% 10%, rgba(56,189,248,0.18), transparent 60%),
+      radial-gradient(700px 280px at 85% 30%, rgba(129,140,248,0.22), transparent 55%),
+      linear-gradient(180deg, rgba(15,23,42,0.92), rgba(2,6,23,0.92));
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 25px 70px rgba(0,0,0,0.30);
+  }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+  .attendance-card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 18px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.18);
+    padding: 26px;
+    overflow: hidden;
+  }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
 
-        .header h2 {
-            margin: 0;
-            font-size: 26px;
-            color: #333;
-        }
+  .header h2 {
+    margin: 0;
+    font-size: 26px;
+    color: #111827;
+    font-weight: 900;
+  }
 
-        .header span {
-            font-size: 14px;
-            color: #777;
-        }
+  .header span {
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 700;
+  }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
+  .change-btn {
+    padding: 10px 16px;
+    border-radius: 14px;
+    background: #f3f4f6;
+    color: #4f46e5;
+    font-weight: 800;
+    text-decoration: none;
+    border: 1px solid #d1d5db;
+    transition: 0.2s;
+    white-space: nowrap;
+  }
+  .change-btn:hover {
+    background: #4f46e5;
+    color: #fff;
+  }
 
-        table thead {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
+  .table-wrap{
+    overflow:auto;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+  }
 
-        table th, table td {
-            padding: 14px;
-            text-align: center;
-        }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 620px; /* helps on mobile, user can scroll */
+    background: #fff;
+  }
 
-        table tbody tr {
-            border-bottom: 1px solid #eee;
-            transition: background 0.3s;
-        }
+  table thead {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+  }
 
-        table tbody tr:hover {
-            background: #f5f7ff;
-        }
+  table th, table td {
+    padding: 14px;
+    text-align: center;
+    font-weight: 700;
+  }
 
-        select {
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+  table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+  }
+  table tbody tr:hover {
+    background: #f5f7ff;
+  }
 
-        select[value="Present"] {
-            color: green;
-        }
+  select {
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    font-weight: 800;
+    outline: none;
+    cursor: pointer;
+    background: #fff;
+  }
 
-        select[value="Absent"] {
-            color: red;
-        }
+  .save-btn {
+    margin-top: 18px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .save-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+  }
 
-        .save-btn {
-            margin-top: 25px;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+  .footer {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 700;
+  }
 
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-        }
+  /* Responsive tweaks */
+  @media (max-width: 600px) {
+    .header h2 { font-size: 20px; }
+    .attendance-card { padding: 18px; }
+    table th, table td { padding: 10px; font-size: 13px; }
+  }
+</style>
 
-        .footer {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #888;
-        }
+<div class="att-wrap">
+  <div class="att-bg">
+    <div class="attendance-card">
 
-        @media(max-width: 600px) {
-            table th, table td {
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            .header h2 {
-                font-size: 20px;
-            }
-        }
-
-        .change-btn {
-            padding: 10px 18px;
-            border-radius: 20px;
-            background: #f3f4f6;
-            color: #4f46e5;
-            font-weight: 600;
-            text-decoration: none;
-            border: 1px solid #d1d5db;
-            transition: 0.3s;
-        }
-
-        .change-btn:hover {
-            background: #4f46e5;
-            color: white;
-        }
-
-    </style>
-</head>
-
-<body>
-
-        <div class="attendance-card">
-
-            <div class="header">
-            <div>
-                <h2>📋 Attendance Sheet</h2>
-                <span>Class: <strong>{{ $class }}</strong> | Date: <strong>{{ $date }}</strong></span>
-            </div>
-
-            <a href="{{ url('/attendance') }}" class="change-btn">
-                🔄 Change Class
-            </a>
+      <div class="header">
+        <div>
+          <h2>📋 Attendance Sheet</h2>
+          <span>Class: <strong>{{ $class }}</strong> | Date: <strong>{{ $date }}</strong></span>
         </div>
 
+        <a href="{{ url('/attendance') }}" class="change-btn">
+          🔄 Change Class
+        </a>
+      </div>
 
-    <form method="POST" action="{{ url('/attendance/store') }}">
+      <form method="POST" action="{{ url('/attendance/store') }}">
         @csrf
-
         <input type="hidden" name="date" value="{{ $date }}">
 
-        <table>
+        <div class="table-wrap">
+          <table>
             <thead>
-                <tr>
-                    <th>Roll No</th>
-                    <th>Student Name</th>
-                    <th>Status</th>
-                </tr>
+              <tr>
+                <th>Roll No</th>
+                <th>Student Name</th>
+                <th>Status</th>
+              </tr>
             </thead>
 
             <tbody>
-                @foreach($students as $student)
+              @foreach($students as $student)
                 <tr>
-                    <td>{{ $student->roll_no }}</td>
-                    <td>{{ $student->name }}</td>
-                    <td>
-                        <select name="attendance[{{ $student->id }}]">
-                            <option value="Present"
-                                {{ isset($attendance[$student->id]) && $attendance[$student->id]->status == 'Present' ? 'selected' : '' }}>
-                                ✅ Present
-                            </option>
+                  <td>{{ $student->roll_no }}</td>
+                  <td>{{ $student->name }}</td>
+                  <td>
+                    <select name="attendance[{{ $student->id }}]">
+                      <option value="Present"
+                        {{ isset($attendance[$student->id]) && $attendance[$student->id]->status == 'Present' ? 'selected' : '' }}>
+                        ✅ Present
+                      </option>
 
-                            <option value="Absent"
-                                {{ isset($attendance[$student->id]) && $attendance[$student->id]->status == 'Absent' ? 'selected' : '' }}>
-                                ❌ Absent
-                            </option>
-                        </select>
-                    </td>
+                      <option value="Absent"
+                        {{ isset($attendance[$student->id]) && $attendance[$student->id]->status == 'Absent' ? 'selected' : '' }}>
+                        ❌ Absent
+                      </option>
+                    </select>
+                  </td>
                 </tr>
-                @endforeach
+              @endforeach
             </tbody>
-        </table>
+          </table>
+        </div>
 
-        <button type="submit" class="save-btn">
-            💾 Save Attendance
-        </button>
-    </form>
+        <button type="submit" class="save-btn">💾 Save Attendance</button>
+      </form>
 
-    <div class="footer">
+      <div class="footer">
         Arya School Management System • Attendance Module
+      </div>
+
     </div>
-
+  </div>
 </div>
-
-</body>
-</html>
+@endsection

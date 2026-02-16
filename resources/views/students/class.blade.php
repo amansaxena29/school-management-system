@@ -20,7 +20,6 @@
     margin: 0 auto;
   }
 
-  /* BACK BUTTON */
   .back-btn{
     background: var(--accent1);
     color:#fff;
@@ -34,7 +33,6 @@
     margin-bottom: 14px;
   }
 
-  /* GLASS CONTAINER */
   .glass-box{
     background: var(--glass);
     backdrop-filter: blur(18px);
@@ -45,7 +43,6 @@
     border: 1px solid var(--stroke);
   }
 
-  /* HEADER ROW */
   .head-row{
     display:flex;
     justify-content:space-between;
@@ -72,7 +69,6 @@
     font-size: 14px;
   }
 
-  /* SEARCH */
   .search-row{
     display:flex;
     justify-content:flex-end;
@@ -115,14 +111,13 @@
     cursor:pointer;
     background: rgba(255,255,255,0.15);
     color: var(--text);
-    display:none;
+    display:flex;
     align-items:center;
     justify-content:center;
     font-weight: 900;
   }
   .clear-btn:hover{ background: rgba(239,68,68,0.35); }
 
-  /* SUCCESS ALERT */
   .success{
     margin: 14px 0 16px;
     padding: 12px 14px;
@@ -133,10 +128,9 @@
     font-weight: 800;
   }
 
-  /* TABLE WRAP (responsive) */
   .table-wrap{
     width: 100%;
-    overflow:auto;               /* ✅ makes table scroll on small screens */
+    overflow:auto;
     -webkit-overflow-scrolling: touch;
     border-radius: 16px;
     border: 1px solid rgba(255,255,255,0.08);
@@ -145,7 +139,7 @@
 
   table{
     width: 100%;
-    min-width: 1050px;           /* ✅ keep columns readable, scroll on mobile */
+    min-width: 1050px;
     border-collapse: separate;
     border-spacing: 0 12px;
     padding: 12px;
@@ -233,9 +227,6 @@
 
   .empty-text{ opacity: .75; font-weight: 800; }
 
-  /* =========================
-     MOBILE CARD VIEW
-     ========================= */
   .cards{ display:none; margin-top: 12px; }
   .st-card{
     background: rgba(255,255,255,0.06);
@@ -257,9 +248,7 @@
     align-items:center;
     min-width: 0;
   }
-  .st-meta{
-    min-width: 0;
-  }
+  .st-meta{ min-width: 0; }
   .st-name{
     font-weight: 950;
     color: var(--text);
@@ -298,7 +287,50 @@
   }
   .st-actions .btn{ flex: 1; }
 
-  /* RESPONSIVE BREAKPOINTS */
+  /* ✅ PAGINATION */
+  .pager{
+    margin-top: 16px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 12px;
+    flex-wrap:wrap;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.10);
+    background: rgba(255,255,255,0.04);
+  }
+  .pager-info{
+    color: rgba(229,231,235,0.75);
+    font-weight: 900;
+    font-size: 13px;
+  }
+  .pager-links{
+    display:flex;
+    gap: 8px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .pbtn{
+    padding: 9px 12px;
+    border-radius: 12px;
+    font-weight: 950;
+    text-decoration:none;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: var(--text);
+  }
+  .pbtn:hover{ border-color: rgba(56,189,248,0.55); }
+  .pbtn.disabled{
+    opacity: .45;
+    pointer-events:none;
+  }
+  .pbtn.active{
+    background: rgba(56,189,248,0.22);
+    border-color: rgba(56,189,248,0.75);
+    color: #e0f2fe;
+  }
+
   @media (max-width: 900px){
     .page-wrap{ padding: 18px; }
     .glass-box{ padding: 16px; border-radius: 18px; }
@@ -306,7 +338,6 @@
   }
 
   @media (max-width: 720px){
-    /* ✅ switch to cards */
     .table-wrap{ display:none; }
     .cards{ display:block; }
 
@@ -329,8 +360,24 @@
 
       <div class="search-row">
         <div class="search-box">
-          <input type="text" id="studentSearch" class="search-input" placeholder="Search here..." onkeyup="searchStudents()">
-          <button type="button" class="clear-btn" onclick="clearSearch()" title="Clear">✕</button>
+          {{-- ✅ Server-side search --}}
+          <form method="GET" action="" id="searchForm" style="margin:0;">
+            <input
+              type="text"
+              name="q"
+              id="studentSearch"
+              class="search-input"
+              placeholder="Search here..."
+              value="{{ request('q') }}"
+              autocomplete="off"
+            >
+          </form>
+
+          @if(request('q'))
+            <button type="button" class="clear-btn" onclick="clearSearch()" title="Clear">✕</button>
+          @else
+            <button type="button" class="clear-btn" onclick="clearSearch()" title="Clear" style="display:none;">✕</button>
+          @endif
         </div>
       </div>
     </div>
@@ -339,13 +386,13 @@
       <div class="success">✅ {{ session('success') }}</div>
     @endif
 
-    @if($students->isEmpty())
+    @if($students->count() === 0)
       <p class="empty-text">No students found in this class.</p>
     @else
 
-      {{-- ✅ TABLE VIEW (Desktop/Tablet) --}}
+      {{-- ✅ TABLE VIEW --}}
       <div class="table-wrap">
-        <table id="studentsTable">
+        <table>
           <thead>
             <tr>
               <th>Name</th>
@@ -373,7 +420,7 @@
                 }
               @endphp
 
-              <tr class="student-row">
+              <tr>
                 <td>
                   <div class="name-cell">
                     <div class="avatar">
@@ -410,8 +457,8 @@
         </table>
       </div>
 
-      {{-- ✅ CARD VIEW (Mobile) --}}
-      <div class="cards" id="studentCards">
+      {{-- ✅ CARD VIEW --}}
+      <div class="cards">
         @foreach($students as $student)
           @php
             $photoUrl = !empty($student->photo_path) ? asset($student->photo_path) : null;
@@ -424,7 +471,7 @@
             }
           @endphp
 
-          <div class="st-card student-card">
+          <div class="st-card">
             <div class="st-top">
               <div class="st-left">
                 <div class="avatar">
@@ -466,37 +513,76 @@
         @endforeach
       </div>
 
+      {{-- ✅ PAGINATION BAR --}}
+      @if($students->hasPages())
+        <div class="pager">
+          <div class="pager-info">
+            Showing {{ $students->firstItem() ?? 0 }} to {{ $students->lastItem() ?? 0 }} of {{ $students->total() }}
+          </div>
+
+          <div class="pager-links">
+            {{-- Prev --}}
+            <a class="pbtn {{ $students->onFirstPage() ? 'disabled' : '' }}"
+               href="{{ $students->previousPageUrl() ?? '#' }}">← Prev</a>
+
+            {{-- Numbers (limited range) --}}
+            @php
+              $current = $students->currentPage();
+              $last = $students->lastPage();
+              $start = max(1, $current - 2);
+              $end = min($last, $current + 2);
+            @endphp
+
+            @if($start > 1)
+              <a class="pbtn" href="{{ $students->url(1) }}">1</a>
+              @if($start > 2)
+                <span class="pbtn disabled">...</span>
+              @endif
+            @endif
+
+            @for($p = $start; $p <= $end; $p++)
+              <a class="pbtn {{ $p == $current ? 'active' : '' }}" href="{{ $students->url($p) }}">{{ $p }}</a>
+            @endfor
+
+            @if($end < $last)
+              @if($end < $last - 1)
+                <span class="pbtn disabled">...</span>
+              @endif
+              <a class="pbtn" href="{{ $students->url($last) }}">{{ $last }}</a>
+            @endif
+
+            {{-- Next --}}
+            <a class="pbtn {{ $students->hasMorePages() ? '' : 'disabled' }}"
+               href="{{ $students->nextPageUrl() ?? '#' }}">Next →</a>
+          </div>
+        </div>
+      @endif
+
     @endif
   </div>
 </div>
 
 <script>
-  function searchStudents(){
-    const input = document.getElementById('studentSearch');
-    const q = (input.value || '').toLowerCase().trim();
-    const clearBtn = document.querySelector('.clear-btn');
+  // ✅ Auto-submit search after user stops typing (debounce)
+  let t = null;
+  const input = document.getElementById('studentSearch');
+  const clearBtn = document.querySelector('.clear-btn');
 
-    // table rows
-    document.querySelectorAll('#studentsTable tbody tr.student-row').forEach(row => {
-      row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+  if (input) {
+    input.addEventListener('input', function(){
+      clearBtn.style.display = this.value.trim() ? 'flex' : 'none';
+
+      if (t) clearTimeout(t);
+      t = setTimeout(() => {
+        document.getElementById('searchForm').submit();
+      }, 450);
     });
-
-    // card items
-    document.querySelectorAll('#studentCards .student-card').forEach(card => {
-      card.style.display = card.innerText.toLowerCase().includes(q) ? '' : 'none';
-    });
-
-    clearBtn.style.display = q ? 'flex' : 'none';
   }
 
   function clearSearch(){
-    const input = document.getElementById('studentSearch');
-    const clearBtn = document.querySelector('.clear-btn');
-    input.value = '';
-    clearBtn.style.display = 'none';
-
-    document.querySelectorAll('#studentsTable tbody tr.student-row').forEach(r => r.style.display = '');
-    document.querySelectorAll('#studentCards .student-card').forEach(c => c.style.display = '');
+    const url = new URL(window.location.href);
+    url.searchParams.delete('q');
+    window.location.href = url.toString();
   }
 </script>
 </x-app-layout>

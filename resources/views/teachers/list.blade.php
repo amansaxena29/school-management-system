@@ -330,12 +330,10 @@
               <td class="muted">{{ $t->phone ?? $t->phone_number ?? '-' }}</td>
 
               <td class="muted">
-                @if(!empty($t->dob))
-                  {{ \Carbon\Carbon::parse($t->dob)->format('d/m/Y') }}
-                @else
-                  -
-                @endif
-              </td>
+                 {{ $t->doj ? $t->doj->format('d/m/Y') : '-' }}
+               </td>
+
+
 
               <td class="muted">{{ $t->email ?? '-' }}</td>
 
