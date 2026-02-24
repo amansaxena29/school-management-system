@@ -293,7 +293,7 @@
     border-radius: 14px;
     border: 1px solid rgba(255,255,255,0.14);
     text-decoration:none;
-    color: rgba(229,231,235,0.92);
+    color: rgba(26, 69, 154, 0.92);
     font-weight: 900;
     background: rgba(255,255,255,0.08);
     transition: transform .2s ease, background .2s ease;

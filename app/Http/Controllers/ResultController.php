@@ -13,7 +13,7 @@ class ResultController extends Controller
     // Admin page
     public function index()
     {
-        return view('results.index');
+        return view('examinations.index');
     }
 
     // Find student + show form

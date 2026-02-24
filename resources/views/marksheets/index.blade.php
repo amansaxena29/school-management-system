@@ -3,17 +3,25 @@
 @section('content')
 <style>
   :root{
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --card2: rgba(255,255,255,.85);
-    --stroke: rgba(15, 23, 42, .10);
-    --text: #0f172a;
-    --muted:#475569;
-    --shadow: 0 18px 55px rgba(2,6,23,.10);
-    --shadow2: 0 10px 28px rgba(2,6,23,.08);
+    /* Glass Dark Theme */
+    --bg1:#050b18;
+    --bg2:#0b1224;
+
+    --glass: rgba(15,23,42,0.66);
+    --glass2: rgba(15,23,42,0.48);
+    --stroke: rgba(255,255,255,0.10);
+    --stroke2: rgba(255,255,255,0.14);
+
+    --text:#e5e7eb;
+    --muted: rgba(229,231,235,0.72);
+
+    --shadow: 0 30px 90px rgba(0,0,0,0.45);
+    --shadow2: 0 18px 40px rgba(0,0,0,0.32);
+
     --radius: 22px;
-    --accent1:#06b6d4;
-    --accent2:#8b5cf6;
+
+    --accent1:#38bdf8;
+    --accent2:#818cf8;
     --accent3:#fb7185;
   }
 
@@ -25,15 +33,15 @@
     color: var(--text);
   }
 
-  /* soft premium background inside content area */
+  /* full glass background inside content */
   .mk-bg{
     position:absolute;
     inset:-18px -18px -18px -18px;
     background:
-      radial-gradient(1100px 540px at 10% 0%, rgba(6,182,212,.18), transparent 55%),
-      radial-gradient(900px 520px at 95% 15%, rgba(139,92,246,.16), transparent 55%),
+      radial-gradient(1000px 520px at 10% 0%, rgba(56,189,248,.18), transparent 55%),
+      radial-gradient(900px 520px at 95% 15%, rgba(129,140,248,.16), transparent 55%),
       radial-gradient(900px 620px at 45% 95%, rgba(251,113,133,.12), transparent 55%),
-      linear-gradient(180deg, #f8fafc, #eef2ff);
+      linear-gradient(180deg, var(--bg1), var(--bg2));
     border-radius: 26px;
     z-index:-3;
   }
@@ -44,20 +52,20 @@
     width: 240px;
     height: 240px;
     border-radius: 999px;
-    filter: blur(28px);
+    filter: blur(34px);
     opacity: .40;
     z-index: -2;
     animation: floaty 10s ease-in-out infinite;
   }
-  .mk-blob.b1{ left: -70px; top: 30px; background: rgba(6,182,212,.35); animation-delay: 0s;}
-  .mk-blob.b2{ right: -80px; top: 10px; background: rgba(139,92,246,.32); animation-delay: 1.3s;}
-  .mk-blob.b3{ left: 35%; bottom: -85px; background: rgba(251,113,133,.28); animation-delay: 2.2s;}
+  .mk-blob.b1{ left: -70px; top: 30px; background: rgba(56,189,248,.45); animation-delay: 0s;}
+  .mk-blob.b2{ right: -80px; top: 10px; background: rgba(129,140,248,.40); animation-delay: 1.3s;}
+  .mk-blob.b3{ left: 35%; bottom: -85px; background: rgba(251,113,133,.32); animation-delay: 2.2s;}
   @keyframes floaty{
     0%,100%{ transform: translateY(0) translateX(0) scale(1); }
     50%{ transform: translateY(-16px) translateX(12px) scale(1.05); }
   }
 
-  /* hero */
+  /* hero glass */
   .mk-hero{
     display:flex;
     gap: 18px;
@@ -66,10 +74,10 @@
     flex-wrap: wrap;
     padding: 20px 20px 16px;
     border-radius: var(--radius);
-    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.78));
+    background: linear-gradient(180deg, rgba(15,23,42,.72), rgba(15,23,42,.52));
     border: 1px solid var(--stroke);
     box-shadow: var(--shadow2);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(14px);
   }
 
   .mk-title{
@@ -78,7 +86,11 @@
     line-height: 1.15;
     font-weight: 950;
     letter-spacing: .2px;
+    background: linear-gradient(90deg, var(--accent1), var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color: transparent;
   }
+
   .mk-sub{
     margin: 8px 0 0;
     color: var(--muted);
@@ -98,18 +110,19 @@
     gap:8px;
     padding: 10px 12px;
     border-radius: 999px;
-    background: rgba(15,23,42,.04);
-    border: 1px solid rgba(15,23,42,.08);
-    color: rgba(15,23,42,.78);
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.10);
+    color: rgba(229,231,235,.88);
     font-weight: 900;
     font-size: 13px;
-    box-shadow: 0 8px 18px rgba(2,6,23,.06);
+    box-shadow: 0 10px 22px rgba(0,0,0,.25);
     user-select:none;
+    backdrop-filter: blur(10px);
   }
   .mk-dot{
     width: 10px; height: 10px; border-radius: 99px;
     background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    box-shadow: 0 0 0 6px rgba(6,182,212,.12);
+    box-shadow: 0 0 0 6px rgba(56,189,248,.12);
   }
 
   /* tools */
@@ -130,21 +143,22 @@
     align-items:center;
     padding: 12px 14px;
     border-radius: 16px;
-    background: rgba(255,255,255,.90);
+    background: rgba(15,23,42,.62);
     border: 1px solid var(--stroke);
-    box-shadow: 0 12px 24px rgba(2,6,23,.06);
+    box-shadow: 0 12px 26px rgba(0,0,0,.25);
+    backdrop-filter: blur(14px);
   }
-  .mk-search svg{ opacity: .8; }
+  .mk-search svg{ opacity: .9; }
   .mk-search input{
     width: 100%;
     border: none;
     outline: none;
     background: transparent;
     color: var(--text);
-    font-weight: 750;
+    font-weight: 800;
     font-size: 14px;
   }
-  .mk-search input::placeholder{ color: rgba(71,85,105,.8); font-weight: 650; }
+  .mk-search input::placeholder{ color: rgba(229,231,235,.58); font-weight: 700; }
 
   .mk-actions{
     display:flex;
@@ -157,19 +171,20 @@
     align-items:center;
     padding: 12px 14px;
     border-radius: 16px;
-    border: 1px solid rgba(15,23,42,.10);
-    background: rgba(255,255,255,.90);
-    color: rgba(15,23,42,.92);
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(15,23,42,.62);
+    color: rgba(229,231,235,.92);
     font-weight: 950;
     text-decoration:none;
-    box-shadow: 0 12px 24px rgba(2,6,23,.06);
+    box-shadow: 0 12px 26px rgba(0,0,0,.25);
     transition: transform .15s ease, background .2s ease, border-color .2s ease;
     user-select:none;
+    backdrop-filter: blur(14px);
   }
   .mk-btn:hover{
     transform: translateY(-2px);
-    background: #fff;
-    border-color: rgba(15,23,42,.14);
+    background: rgba(15,23,42,.75);
+    border-color: rgba(255,255,255,.18);
   }
 
   /* alert */
@@ -177,14 +192,15 @@
     margin-top: 14px;
     padding: 12px 14px;
     border-radius: 16px;
-    background: rgba(239,68,68,.12);
+    background: rgba(239,68,68,.14);
     border: 1px solid rgba(239,68,68,.28);
-    color: #991b1b;
+    color: #fecaca;
     font-weight: 900;
-    box-shadow: 0 12px 24px rgba(2,6,23,.06);
+    box-shadow: 0 12px 24px rgba(0,0,0,.25);
+    backdrop-filter: blur(12px);
   }
 
-  /* cards */
+  /* cards grid */
   .mk-grid{
     margin-top: 16px;
     display:grid;
@@ -198,13 +214,14 @@
     overflow:hidden;
     border-radius: 20px;
     padding: 16px 16px;
-    background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.82));
-    border: 1px solid rgba(15,23,42,.10);
+    background: linear-gradient(180deg, rgba(15,23,42,.70), rgba(15,23,42,.52));
+    border: 1px solid rgba(255,255,255,.10);
     box-shadow: var(--shadow2);
     text-decoration:none;
     color: var(--text);
     transition: transform .18s ease, box-shadow .18s ease, border-color .2s ease;
     min-height: 112px;
+    backdrop-filter: blur(14px);
   }
 
   .mk-card::before{
@@ -212,8 +229,8 @@
     position:absolute;
     inset:-2px;
     background:
-      radial-gradient(600px 220px at 10% 10%, rgba(6,182,212,.18), transparent 60%),
-      radial-gradient(520px 260px at 80% 20%, rgba(139,92,246,.16), transparent 60%),
+      radial-gradient(600px 220px at 10% 10%, rgba(56,189,248,.18), transparent 60%),
+      radial-gradient(520px 260px at 80% 20%, rgba(129,140,248,.16), transparent 60%),
       radial-gradient(420px 260px at 40% 90%, rgba(251,113,133,.12), transparent 60%);
     opacity: 0;
     transition: opacity .2s ease;
@@ -222,8 +239,8 @@
 
   .mk-card:hover{
     transform: translateY(-3px);
-    box-shadow: 0 26px 70px rgba(2,6,23,.14);
-    border-color: rgba(15,23,42,.14);
+    box-shadow: var(--shadow);
+    border-color: rgba(255,255,255,.16);
   }
   .mk-card:hover::before{ opacity: 1; }
 
@@ -242,18 +259,18 @@
   }
   .mk-hint{
     margin: 8px 0 0;
-    color: #556276;
+    color: rgba(229,231,235,.70);
     font-weight: 700;
     font-size: 13px;
   }
   .mk-pill{
     padding: 8px 10px;
     border-radius: 999px;
-    background: rgba(15,23,42,.04);
-    border: 1px solid rgba(15,23,42,.08);
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.10);
     font-weight: 950;
     font-size: 12px;
-    color: rgba(15,23,42,.76);
+    color: rgba(229,231,235,.82);
     white-space: nowrap;
   }
 
@@ -263,21 +280,23 @@
     align-items:center;
     justify-content:flex-end;
     gap: 10px;
-    color: rgba(15,23,42,.70);
+    color: rgba(229,231,235,.78);
     font-weight: 900;
     font-size: 13px;
   }
-  .mk-arrow svg{ opacity:.9; transition: transform .18s ease; }
+  .mk-arrow svg{ opacity:.95; transition: transform .18s ease; }
   .mk-card:hover .mk-arrow svg{ transform: translateX(3px); }
 
   .mk-empty{
     margin-top: 16px;
     padding: 18px;
     border-radius: var(--radius);
-    background: rgba(255,255,255,.90);
-    border: 1px solid var(--stroke);
-    color: rgba(15,23,42,.78);
+    background: rgba(15,23,42,.62);
+    border: 1px solid rgba(255,255,255,.10);
+    color: rgba(229,231,235,.78);
     font-weight: 900;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 26px rgba(0,0,0,.25);
   }
 
   @media (max-width: 1000px){ .mk-card{ grid-column: span 4; } }
@@ -315,13 +334,12 @@
   <div class="mk-tools">
     <div class="mk-search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M21 21l-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z" stroke="rgba(15,23,42,.72)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M21 21l-4.3-4.3m1.8-5.2a7 7 0 11-14 0 7 7 0 0114 0z" stroke="rgba(229,231,235,.85)" stroke-width="2" stroke-linecap="round"/>
       </svg>
       <input id="classSearch" type="text" placeholder="Search class (example: 7, 10, 12)..." autocomplete="off">
     </div>
 
     <div class="mk-actions">
-      {{-- <a class="mk-btn" href="{{ route('results.index') }}">↩ Results</a> --}}
       <a class="mk-btn" href="{{ route('dashboard') }}">🏠 Dashboard</a>
     </div>
   </div>
@@ -344,7 +362,7 @@
         <div class="mk-arrow">
           View Students
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M5 12h13m0 0l-5-5m5 5l-5 5" stroke="rgba(15,23,42,.65)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 12h13m0 0l-5-5m5 5l-5 5" stroke="rgba(229,231,235,.78)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
       </a>

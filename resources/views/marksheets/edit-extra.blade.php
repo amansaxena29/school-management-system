@@ -310,9 +310,9 @@
                 <div class="actions">
                     <button type="submit" class="btn-save">Save</button>
 
-                    <a href="{{ route('marksheets.generate', [$student->id, $class]) }}" class="btn-pdf">
+                    {{-- <a href="{{ route('marksheets.generate', [$student->id, $class]) }}" class="btn-pdf">
                         Generate PDF
-                    </a>
+                    </a> --}}
                 </div>
             </form>
         </div>

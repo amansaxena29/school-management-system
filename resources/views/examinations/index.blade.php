@@ -227,6 +227,14 @@
 </style>
 
 <div class="exam-wrap">
+
+  <!-- Success message display -->
+  @if(session('success'))
+    <div class="alert alert-success" style="background-color: #38bdf8; color: white; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+        {{ session('success') }}
+    </div>
+  @endif
+
   <div class="exam-hero">
     <div class="exam-head">
       <div>

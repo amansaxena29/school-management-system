@@ -6,16 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Teacher;
 use Illuminate\Validation\Rule;
 
-
 class TeacherController extends Controller
 {
     public function index()
     {
-       $teachers = \App\Models\Teacher::orderBy('name', 'asc')->get();
+        $teachers = \App\Models\Teacher::orderBy('name', 'asc')->paginate(5);
         return view('teachers.index', compact('teachers'));
     }
 
-        public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -40,8 +39,6 @@ class TeacherController extends Controller
         return redirect()->route('teachers.index')->with('success', 'Teacher added successfully!');
     }
 
-
-
     public function destroy(\App\Models\Teacher $teacher)
     {
         $teacher->delete();
@@ -50,7 +47,7 @@ class TeacherController extends Controller
 
     public function list()
     {
-        $teachers = \App\Models\Teacher::orderBy('name', 'asc')->get(); // adjust if your column differs
+        $teachers = \App\Models\Teacher::orderBy('name', 'asc')->paginate(5); // adjust if your column differs
         return view('teachers.list', compact('teachers'));
     }
 
@@ -88,5 +85,4 @@ class TeacherController extends Controller
 
         return redirect()->route('teachers.list')->with('success', 'Details updated successfully!');
     }
-
 }

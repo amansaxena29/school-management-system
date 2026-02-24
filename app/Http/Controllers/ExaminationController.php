@@ -28,7 +28,7 @@ class ExaminationController extends Controller
 
     public function index()
     {
-        return view('examinations.index');
+        return view('examinations.index')->with('success', 'Result saved successfully!');
     }
 
     public function classes($type)

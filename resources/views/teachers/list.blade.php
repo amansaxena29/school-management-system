@@ -261,12 +261,57 @@
     opacity: 1;
     transform: translateY(0);
   }
+  .t-pagination{
+  padding: 14px 14px 18px;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.t-page{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  color: rgba(229,231,235,0.92);
+  font-weight: 900;
+  text-decoration:none;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.20);
+}
+
+.t-page:hover{ background: rgba(255,255,255,0.12); }
+
+.t-page.active{
+  background: linear-gradient(90deg, rgba(56,189,248,0.92), rgba(129,140,248,0.92));
+  color:#020617;
+  border-color: rgba(255,255,255,0.18);
+}
+
+.t-page.disabled{
+  opacity:.45;
+  pointer-events:none;
+}
+
+.t-page.dots{
+  background: transparent;
+  border-color: transparent;
+  box-shadow:none;
+}
+
+
+
 
   @media (max-width: 900px){
     .toolbar{ justify-content: stretch; }
     .search-box{ width: 100%; }
     .btn-back{ width: 100%; min-width: unset; }
   }
+
+
 </style>
 
 <div class="t-wrap">
@@ -355,6 +400,11 @@
           @endforelse
         </tbody>
       </table>
+
+      <div class="pagination-wrap">
+        {{ $teachers->onEachSide(1)->links('pagination.teachers') }}
+      </div>
+
     </div>
   </div>
 
