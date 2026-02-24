@@ -358,10 +358,15 @@
             <input type="text" name="phone" value="{{ old('phone', $teacher->phone ?? $teacher->phone_number) }}" required>
           </div>
 
-          <div class="cell label">DOB</div>
-          <div class="cell input">
-            <input type="date" name="dob" value="{{ old('dob', $teacher->dob) }}">
-          </div>
+          <div class="cell label">DOJ</div>
+            <div class="cell input">
+            <input
+                type="date"
+                name="doj"
+                id="doj"
+                value="{{ old('doj', optional($teacher->doj)->format('Y-m-d')) }}">
+            </div>
+
         </div>
 
         <div class="row row-full">

@@ -68,7 +68,7 @@
     font-size: 12px;
     border: 1px solid rgba(255,255,255,0.14);
     background: rgba(255,255,255,0.08);
-    color: rgba(229,231,235,0.90);
+    color: rgba(23, 98, 247, 0.9);
     white-space: nowrap;
     box-shadow: 0 14px 35px rgba(0,0,0,0.18);
   }

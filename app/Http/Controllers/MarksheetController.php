@@ -29,7 +29,7 @@ class MarksheetController extends Controller
     {
         $students = Student::where('class', $class)
             ->orderByRaw("CAST(roll_no AS UNSIGNED), roll_no")
-            ->get();
+             ->paginate(5);  // 10 students per page
 
         return view('marksheets.class', compact('class', 'students'));
     }
