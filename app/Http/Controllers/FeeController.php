@@ -20,7 +20,7 @@ class FeeController extends Controller
         // $feesQuery->orWhere('class', 'like', '%' . $search . '%');
     }
 
-    $fees = $feesQuery->simplePaginate(10)->appends(['search' => $search]);
+    $fees = $feesQuery->simplePaginate(5)->appends(['search' => $search]);
 
     return view('fees.index', compact('fees', 'search'));
 }
@@ -83,7 +83,7 @@ public function storeClassWise(Request $request, $class)
 {
     $request->validate([
         'student_name' => 'required',
-        'father_name'=>'required', 
+        'father_name'=>'required',
         'amount' => 'required|numeric',
         'status' => 'required'
     ]);

@@ -482,7 +482,7 @@
     </div>
   </div>
 
-  <!-- Pagination -->
+  {{-- <!-- Pagination -->
   <div class="simple-pagination">
     @if ($fees->onFirstPage())
       <span class="disabled">« Previous</span>
@@ -495,7 +495,7 @@
     @else
       <span class="disabled">Next »</span>
     @endif
-  </div>
+  </div> --}}
 
 </div>
 @endsection

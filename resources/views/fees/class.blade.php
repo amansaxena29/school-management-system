@@ -69,7 +69,7 @@
     border-radius: 14px;
     text-decoration:none;
     font-weight: 900;
-    color: rgba(229,231,235,0.92);
+    color: rgba(34, 82, 178, 0.92);
     background: rgba(255,255,255,0.10);
     border: 1px solid rgba(255,255,255,0.14);
     box-shadow: 0 14px 35px rgba(0,0,0,0.22);
