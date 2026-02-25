@@ -308,9 +308,9 @@
           </button>
         </form>
 
-        <a class="btn purple" href="{{ route('exams.subjects.edit', [$type, $class]) }}">
+        {{-- <a class="btn purple" href="{{ route('exams.subjects.edit', [$type, $class]) }}">
           ✏️ Edit Subjects
-        </a>
+        </a> --}}
 
         <a class="btn" href="{{ route('exams.classes', $type) }}">
           ← Back
