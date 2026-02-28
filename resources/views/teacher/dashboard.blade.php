@@ -245,6 +245,7 @@
     <div class="sidebar-title">Teacher Panel</div>
     <nav>
         <a href="{{ route('teacher.dashboard') }}" class="active">🏠 Dashboard</a>
+        <a href="{{ route('teacher.attendance') }}">📋 Attendance</a>
         {{-- Add more links here later e.g. My Students, Attendance, etc. --}}
     </nav>
     <div class="sidebar-footer">

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Arya Director Login</title>
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
 
     <style>
         body { margin: 0; font-family: 'Segoe UI', sans-serif; }

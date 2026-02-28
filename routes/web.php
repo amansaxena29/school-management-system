@@ -185,6 +185,14 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
     // Protected teacher routes (must be logged in as teacher)
     Route::middleware('teacher')->group(function () {
         Route::get('/dashboard', [TeacherAuthController::class, 'dashboard'])->name('dashboard');
+          // Attendance
+        Route::get('/attendance',              [TeacherAuthController::class, 'attendanceIndex'])->name('attendance');
+        Route::post('/attendance/show',        [TeacherAuthController::class, 'attendanceShow'])->name('attendance.show');
+        Route::post('/attendance/store',       [TeacherAuthController::class, 'attendanceStore'])->name('attendance.store');
+        Route::get('/attendance/view',         [TeacherAuthController::class, 'attendanceViewForm'])->name('attendance.viewForm');
+        Route::post('/attendance/view',        [TeacherAuthController::class, 'attendanceView'])->name('attendance.view');
+        Route::get('/attendance/edit/{id}',    [TeacherAuthController::class, 'attendanceEdit'])->name('attendance.edit');
+        Route::put('/attendance/update/{id}',  [TeacherAuthController::class, 'attendanceUpdate'])->name('attendance.update');
     });
 
 });
