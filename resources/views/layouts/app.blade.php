@@ -75,20 +75,22 @@
     <aside class="sidebar">
         <div class="sidebar-header">Arya Admin</div>
 
-        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Dashboard</a>
-        <a href="{{ route('students.index') }}" class="{{ request()->routeIs('students.*') ? 'active' : '' }}">Students</a>
-        <a href="{{ route('teachers.index') }}" class="{{ request()->routeIs('teachers.*') ? 'active' : '' }}">Teachers</a>
-        <a href="{{ route('fees.index') }}" class="{{ request()->routeIs('fees.*') ? 'active' : '' }}">Fees</a>
-        <a href="{{ url('/attendance') }}" class="{{ request()->is('attendance*') ? 'active' : '' }}">Attendances</a>
-        <a href="{{ route('exams.index') }}"class="{{ request()->routeIs('exams.*') ? 'active' : '' }}">Examinations</a>
+        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">🏠 Dashboard</a>
+        <a href="{{ route('students.index') }}" class="{{ request()->routeIs('students.*') ? 'active' : '' }}">🎒 Students</a>
+        <a href="{{ route('teachers.index') }}" class="{{ request()->routeIs('teachers.*') ? 'active' : '' }}">👩‍🏫 Teachers</a>
+        <a href="{{ route('fees.index') }}" class="{{ request()->routeIs('fees.*') ? 'active' : '' }}">💰 Fees</a>
+        <a href="{{ url('/attendance') }}" class="{{ request()->is('attendance*') ? 'active' : '' }}">📋 Attendances</a>
+        <a href="{{ route('exams.index') }}"class="{{ request()->routeIs('exams.*') ? 'active' : '' }}"> 📝Examinations</a>
         {{-- <a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}">Results</a> --}}
-        <a href="{{ route('marksheets.index') }}" class="{{ request()->routeIs('marksheets.*') ? 'active' : '' }}">Marksheets</a>
-        <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }} sidebar-link">Profile</a>
+        <a href="{{ route('marksheets.index') }}" class="{{ request()->routeIs('marksheets.*') ? 'active' : '' }}">📄 Marksheets</a>
+        <a href="{{ route('cms.index') }}">🖥️ Website CMS</a>
+        <a href="{{ route('contact.index') }}">📬 Contact Messages</a>
+        <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }} sidebar-link">👤 Profile</a>
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" style="all:unset;width:100%;cursor:pointer;">
-                <span style="padding:14px 22px;display:block;color:rgb(255, 255, 255);">Logout</span>
+                <span style="padding:14px 22px;display:block;color:rgb(255, 255, 255);">🚪Logout</span>
             </button>
         </form>
 

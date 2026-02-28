@@ -25,7 +25,8 @@ Route::get('/result/download', [PublicResultController::class, 'download'])
 
 
 
-
+// Contact form submit (public)
+Route::post('/contact', [App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -141,6 +142,34 @@ Route::get('/examinations/{type}/class/{class}/subjects', [ExaminationController
 
 Route::post('/examinations/{type}/class/{class}/subjects', [ExaminationController::class, 'saveSubjects'])
     ->name('exams.subjects.save');
+
+
+
+
+    // ===================== CMS ROUTES =====================
+Route::get('/cms', [App\Http\Controllers\CmsController::class, 'index'])->name('cms.index');
+
+// Settings
+Route::post('/cms/settings', [App\Http\Controllers\CmsController::class, 'updateSettings'])->name('cms.settings.update');
+
+// Courses
+Route::post('/cms/courses', [App\Http\Controllers\CmsController::class, 'storeCourse'])->name('cms.courses.store');
+Route::put('/cms/courses/{course}', [App\Http\Controllers\CmsController::class, 'updateCourse'])->name('cms.courses.update');
+Route::delete('/cms/courses/{course}', [App\Http\Controllers\CmsController::class, 'deleteCourse'])->name('cms.courses.delete');
+
+// Gallery
+Route::post('/cms/gallery', [App\Http\Controllers\CmsController::class, 'storeGallery'])->name('cms.gallery.store');
+Route::delete('/cms/gallery/{gallery}', [App\Http\Controllers\CmsController::class, 'deleteGallery'])->name('cms.gallery.delete');
+
+// Achievements
+Route::post('/cms/achievements', [App\Http\Controllers\CmsController::class, 'storeAchievement'])->name('cms.achievements.store');
+Route::put('/cms/achievements/{achievement}', [App\Http\Controllers\CmsController::class, 'updateAchievement'])->name('cms.achievements.update');
+Route::delete('/cms/achievements/{achievement}', [App\Http\Controllers\CmsController::class, 'deleteAchievement'])->name('cms.achievements.delete');
+
+// Contact Messages (Admin)
+Route::get('/contact-messages', [App\Http\Controllers\ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact-messages/{message}/read', [App\Http\Controllers\ContactController::class, 'markRead'])->name('contact.read');
+Route::delete('/contact-messages/{message}', [App\Http\Controllers\ContactController::class, 'destroy'])->name('contact.destroy');
 
 
 });

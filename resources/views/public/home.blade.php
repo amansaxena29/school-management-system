@@ -79,6 +79,36 @@
       color: #000;
     }
 
+    /* --- Nav Buttons --- */
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-buttons a {
+      padding: 8px 18px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .btn-admin {
+      background: linear-gradient(135deg, #4a148c, #8e24aa);
+      color: white !important;
+    }
+
+    .btn-teacher {
+      background: #f97316;
+      color: #fff !important;
+      border-radius: 999px !important;
+    }
+
     /* --- Hero Section --- */
     .hero {
       height: 100vh;
@@ -195,16 +225,34 @@
     /* --- Gallery Section --- */
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
     }
 
-    .gallery-grid img {
+    /* ✅ Fixed: All gallery images same size */
+    .gallery-grid .gallery-item {
+      width: 100%;
+      height: 260px;
+      overflow: hidden;
+      border-radius: 25px;
       background: rgba(255,255,255,0.15);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 25px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .gallery-grid .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 25px;
+      display: block;
+      transition: transform 0.5s, box-shadow 0.5s;
+    }
+
+    .gallery-grid .gallery-item img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
     }
 
     /* --- Achievements --- */
@@ -287,33 +335,32 @@
       }
     }
 
-    .brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  text-decoration:none;
-  color: inherit;
-}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
 
-.brand-logo{
-  width:42px;
-  height:42px;
-  object-fit:contain;
-  border-radius:10px; /* remove if you want sharp logo */
-}
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
 
-.brand-text{
-  font-weight:900;
-  font-size:28px;      /* match your design */
-  line-height:1;
-}
+    .brand-text {
+      font-weight: 900;
+      font-size: 28px;
+      line-height: 1;
+    }
 
-/* Mobile */
-@media (max-width: 768px){
-  .brand-text{ font-size:22px; }
-  .brand-logo{ width:34px; height:34px; }
-}
-
+    /* Mobile */
+    @media (max-width: 768px){
+      .brand-text { font-size: 22px; }
+      .brand-logo { width: 34px; height: 34px; }
+    }
 
   </style>
 </head>
@@ -322,15 +369,12 @@
   <!-- Navbar -->
   <nav>
     <a href="{{ url('/') }}" class="brand">
-  <img src="{{ asset('images/school-logo.png') }}" alt="Arya Public Academy" class="brand-logo">
-  <span class="brand-text">Arya Public Academy</span>
-</a>
+      <img src="{{ asset('images/school-logo.png') }}" alt="Arya Public Academy" class="brand-logo">
+      <span class="brand-text">Arya Public Academy</span>
+    </a>
 
     <ul>
-     <li>
-
-
-  </li>
+      <li></li>
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#courses">Courses</a></li>
@@ -338,56 +382,41 @@
       <li><a href="#achievements">Achievements</a></li>
       <li><a href="#contact">Contact</a></li>
       {{-- <li><a href="{{ url('/result') }}">Result</a></li> --}}
-
     </ul>
-    <a href="/login" style="
-      background: linear-gradient(135deg, #4a148c, #8e24aa);
-      color: white;
-      padding: 6px 14px;
-      border-radius: 14px;
-      font-weight: 600;
-    ">
-    Login as Admin
-  </a>
 
-  <a href="{{ route('teacher.login') }}"
-   style="background:#f97316; color:#fff; padding:10px 22px;
-          border-radius:999px; text-decoration:none;
-          font-weight:600; font-size:0.95rem;">
-    Login as Teacher
-</a>
-</nav>
+    {{-- ✅ Fixed: Both buttons properly aligned in a flex row --}}
+    <div class="nav-buttons">
+      <a href="/login" class="btn-admin">Login as Admin</a>
+      <a href="{{ route('teacher.login') }}" class="btn-teacher">Login as Teacher</a>
+    </div>
+  </nav>
 
   <!-- Hero -->
   <section class="hero" id="home">
     <div class="hero-content">
-      <h1>Welcome to Your School</h1>
-      <p>Empowering students with creativity, knowledge, and confidence</p>
+      <h1>{{ \App\Models\SiteSetting::get('hero_title', 'Welcome to Your School') }}</h1>
+      <p>{{ \App\Models\SiteSetting::get('hero_subtitle', 'Empowering students with creativity, knowledge, and confidence') }}</p>
     </div>
   </section>
 
   <!-- About -->
   <section class="about" id="about">
     <h2>About Us</h2>
-    <p>Our school fosters academic excellence and personal growth with innovative teaching, modern infrastructure, and a focus on creativity and critical thinking. Join us to explore a world of opportunities.</p>
+    <p>{{ \App\Models\SiteSetting::get('about_text', 'Our school fosters academic excellence and personal growth with innovative teaching, modern infrastructure, and a focus on creativity and critical thinking. Join us to explore a world of opportunities.') }}</p>
   </section>
 
   <!-- Courses -->
   <section class="courses" id="courses">
     <h2>Our Courses</h2>
     <div class="courses-grid">
-      <div class="course-card">
-        <h3>Mathematics</h3>
-        <p>Master concepts from basics to advanced problem-solving techniques.</p>
-      </div>
-      <div class="course-card">
-        <h3>Science</h3>
-        <p>Engage in Physics, Chemistry, and Biology concepts.</p>
-      </div>
-      <div class="course-card">
-        <h3>Computer Science</h3>
-        <p>Learn modern technology skills for the future.</p>
-      </div>
+      @forelse(\App\Models\Course::all() as $course)
+        <div class="course-card">
+          <h3>{{ $course->title }}</h3>
+          <p>{{ $course->description }}</p>
+        </div>
+      @empty
+        <p style="text-align:center; color:#888;">No courses available yet.</p>
+      @endforelse
     </div>
   </section>
 
@@ -395,10 +424,16 @@
   <section class="gallery" id="gallery">
     <h2>Gallery</h2>
     <div class="gallery-grid">
-      <img src="https://images.unsplash.com/photo-1765994898026-4fa84ade4a61?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0" alt="School">
-      <img src="https://images.unsplash.com/photo-1490424660416-359912d314b3?w=600&auto=format&fit=crop&q=60" alt="Classroom">
-      <img src="https://images.unsplash.com/photo-1764072970350-2ce4f354a483?w=600&auto=format&fit=crop&q=60" alt="Event">
-      <img src="https://images.unsplash.com/photo-1660501602631-6b2b3f7c9b40?w=600&auto=format&fit=crop&q=60" alt="Sports">
+      {{-- ✅ Fixed: Wrapped in .gallery-item div for uniform size --}}
+      @forelse(\App\Models\Gallery::all() as $img)
+        <div class="gallery-item">
+          <img
+            src="{{ $img->is_url ? $img->image_path : asset('storage/' . $img->image_path) }}"
+            alt="{{ $img->caption ?? 'Gallery Image' }}">
+        </div>
+      @empty
+        <p style="text-align:center; color:#888;">No images in gallery yet.</p>
+      @endforelse
     </div>
   </section>
 
@@ -406,28 +441,62 @@
   <section class="achievements" id="achievements">
     <h2>Achievements</h2>
     <ul>
-      <li>Won National Science Award 2025</li>
-      <li>100% Pass Rate in Board Exams</li>
-      <li>Best Sports School Award 2024</li>
+      @forelse(\App\Models\Achievement::all() as $ach)
+        <li>{{ $ach->title }}</li>
+      @empty
+        <li>No achievements added yet.</li>
+      @endforelse
     </ul>
   </section>
 
   <!-- Contact -->
-  <section class="contact" id="contact">
+<section class="contact" id="contact">
     <h2>Contact Us</h2>
-    <form>
-      <input type="text" placeholder="Your Name" required>
-      <input type="email" placeholder="Your Email" required>
-      <textarea placeholder="Your Message" rows="5" required></textarea>
-      <button type="submit">Send Message</button>
+
+    {{-- Success Message --}}
+    @if(session('message_sent'))
+        <div style="max-width:600px; margin:0 auto 20px auto;
+                    background:#d1fae5; border:1px solid #6ee7b7;
+                    color:#065f46; padding:14px 20px;
+                    border-radius:25px; text-align:center; font-weight:500;">
+            ✅ {{ session('message_sent') }}
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('contact.store') }}">
+        @csrf
+        <input type="text" name="name"
+               value="{{ old('name') }}"
+               placeholder="Your Name" required>
+
+        @error('name')
+            <p style="color:red; font-size:0.8rem; margin:-10px 0 10px 14px;">{{ $message }}</p>
+        @enderror
+
+        <input type="email" name="email"
+               value="{{ old('email') }}"
+               placeholder="Your Email" required>
+
+        @error('email')
+            <p style="color:red; font-size:0.8rem; margin:-10px 0 10px 14px;">{{ $message }}</p>
+        @enderror
+
+        <textarea name="message" placeholder="Your Message"
+                  rows="5" required>{{ old('message') }}</textarea>
+
+        @error('message')
+            <p style="color:red; font-size:0.8rem; margin:-10px 0 10px 14px;">{{ $message }}</p>
+        @enderror
+
+        <button type="submit">Send Message</button>
     </form>
-  </section>
+</section>
 
   <!-- Footer -->
   <footer>
     <p>© 2025 Arya Public Academy. All rights reserved.</p> <br>
-    <p> Contact Number : 8127515044 </p> <br>
-    <p> Kusmara, Jalaun (U.P)</p>
+    <p>Contact Number : {{ \App\Models\SiteSetting::get('footer_contact', '8127515044') }}</p> <br>
+    <p>{{ \App\Models\SiteSetting::get('footer_address', 'Kusmara, Jalaun (U.P)') }}</p>
   </footer>
 
 </body>

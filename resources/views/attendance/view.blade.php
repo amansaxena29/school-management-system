@@ -11,7 +11,7 @@
         justify-content: center;
         align-items: flex-start;
         padding-top: 40px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
+        background:radial-gradient(circle, rgba(102,126,234,0.35), transparent 70%);
     }
 
     .attendance-card {

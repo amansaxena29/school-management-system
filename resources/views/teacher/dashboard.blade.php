@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Dashboard - Arya Public Academy</title>
+     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -14,7 +15,7 @@
             min-height: 100vh;
         }
 
-        /* SIDEBAR */
+        /* ===================== SIDEBAR ===================== */
         .sidebar {
             width: 240px;
             background: #7c2d12;
@@ -24,6 +25,10 @@
             padding: 24px 0;
             position: fixed;
             height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
         .sidebar-title {
@@ -58,7 +63,43 @@
             border-top: 1px solid rgba(255,255,255,0.15);
         }
 
-        /* MAIN CONTENT */
+        /* ===================== HAMBURGER ===================== */
+        .hamburger {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 1100;
+            background: #7c2d12;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        /* Overlay when sidebar is open on mobile */
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.active { display: block; }
+
+        /* ===================== MAIN CONTENT ===================== */
         .main {
             margin-left: 240px;
             padding: 32px;
@@ -76,7 +117,7 @@
         .welcome-banner h1 { font-size: 1.6rem; margin-bottom: 6px; }
         .welcome-banner p  { font-size: 0.95rem; opacity: 0.85; }
 
-        /* CARDS */
+        /* ===================== CARDS ===================== */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -96,7 +137,7 @@
         .card h3 { font-size: 1rem; color: #334155; margin-bottom: 4px; }
         .card p { font-size: 0.85rem; color: #64748b; }
 
-        /* PROFILE TABLE */
+        /* ===================== PROFILE TABLE ===================== */
         .profile-section {
             background: #fff;
             border-radius: 12px;
@@ -117,7 +158,7 @@
         td:first-child { color: #64748b; width: 160px; font-weight: 500; }
         td:last-child  { color: #1e293b; }
 
-        /* LOGOUT FORM */
+        /* ===================== LOGOUT ===================== */
         .logout-form { margin: 0; }
         .logout-btn {
             background: none; border: none;
@@ -128,12 +169,79 @@
             transition: background 0.2s;
         }
         .logout-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+        /* ===================== MOBILE RESPONSIVE ===================== */
+        @media (max-width: 768px) {
+
+            /* Hide sidebar off screen by default */
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            /* Show sidebar when active */
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            /* Show hamburger button */
+            .hamburger {
+                display: flex;
+            }
+
+            /* Main takes full width on mobile */
+            .main {
+                margin-left: 0;
+                padding: 20px 16px;
+                padding-top: 64px; /* space for hamburger button */
+            }
+
+            .welcome-banner {
+                padding: 20px;
+            }
+
+            .welcome-banner h1 {
+                font-size: 1.2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .card {
+                padding: 16px 12px;
+            }
+
+            .card .icon { font-size: 1.5rem; }
+            .card h3 { font-size: 0.85rem; }
+            .card p { font-size: 0.75rem; }
+
+            table { font-size: 0.8rem; }
+            td { padding: 8px 10px; }
+            td:first-child { width: 120px; }
+        }
+
+        @media (max-width: 400px) {
+            .cards-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
+<!-- Overlay (closes sidebar when clicked) -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Hamburger Button -->
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
+
 <!-- SIDEBAR -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
     <div class="sidebar-title">Teacher Panel</div>
     <nav>
         <a href="{{ route('teacher.dashboard') }}" class="active">🏠 Dashboard</a>
@@ -171,7 +279,7 @@
             <p>{{ $teacher->qualification }}</p>
         </div>
         <div class="card">
-            <div class="icon">📅</div>
+            <div class="icon">⏳</div>
             <h3>Experience</h3>
             <p>{{ $teacher->experience }} Years</p>
         </div>
@@ -196,6 +304,22 @@
     </div>
 
 </div>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+    }
+</script>
 
 </body>
 </html>

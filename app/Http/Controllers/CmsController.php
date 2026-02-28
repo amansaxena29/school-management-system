@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\SiteSetting;
+use App\Models\Course;
+use App\Models\Gallery;
+use App\Models\Achievement;
+use Illuminate\Support\Facades\Storage;
+
+
+class CmsController extends Controller
+{
+    // ===================== CMS DASHBOARD =====================
+    public function index()
+    {
+        $courses      = Course::all();
+        $gallery      = Gallery::all();
+        $achievements = Achievement::all();
+        return view('admin.cms.index', compact('courses', 'gallery', 'achievements'));
+    }
+
+    // ===================== SITE SETTINGS (Hero, About, Footer) =====================
+    public function updateSettings(Request $request)
+    {
+        $request->validate([
+            'hero_title'    => 'required|string|max:255',
+            'hero_subtitle' => 'required|string|max:255',
+            'about_text'    => 'required|string',
+            'footer_contact'=> 'nullable|string',
+            'footer_address'=> 'nullable|string',
+        ]);
+
+        SiteSetting::set('hero_title',     $request->hero_title);
+        SiteSetting::set('hero_subtitle',  $request->hero_subtitle);
+        SiteSetting::set('about_text',     $request->about_text);
+        SiteSetting::set('footer_contact', $request->footer_contact);
+        SiteSetting::set('footer_address', $request->footer_address);
+
+        return back()->with('success', 'Settings updated successfully!');
+    }
+
+    // ===================== COURSES =====================
+    public function storeCourse(Request $request)
+    {
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        Course::create($request->only('title', 'description'));
+        return back()->with('success', 'Course added successfully!');
+    }
+
+    public function updateCourse(Request $request, Course $course)
+    {
+        $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+        ]);
+
+        $course->update($request->only('title', 'description'));
+        return back()->with('success', 'Course updated successfully!');
+    }
+
+    public function deleteCourse(Course $course)
+    {
+        $course->delete();
+        return back()->with('success', 'Course deleted!');
+    }
+
+    // ===================== GALLERY =====================
+    public function storeGallery(Request $request)
+    {
+        $request->validate([
+            'caption'    => 'nullable|string|max:255',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_url'  => 'nullable|url',
+        ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('gallery', 'public');
+            Gallery::create([
+                'image_path' => $path,
+                'caption'    => $request->caption,
+                'is_url'     => false,
+            ]);
+        } elseif ($request->filled('image_url')) {
+            Gallery::create([
+                'image_path' => $request->image_url,
+                'caption'    => $request->caption,
+                'is_url'     => true,
+            ]);
+        } else {
+            return back()->withErrors(['image' => 'Please upload an image or provide a URL.']);
+        }
+
+        return back()->with('success', 'Image added to gallery!');
+    }
+
+    public function deleteGallery(Gallery $gallery)
+    {
+        // Delete file from storage if it was uploaded
+        if (!$gallery->is_url && Storage::disk('public')->exists($gallery->image_path)) {
+            Storage::disk('public')->delete($gallery->image_path);
+        }
+        $gallery->delete();
+        return back()->with('success', 'Image deleted!');
+    }
+
+    // ===================== ACHIEVEMENTS =====================
+    public function storeAchievement(Request $request)
+    {
+        $request->validate(['title' => 'required|string|max:255']);
+        Achievement::create($request->only('title'));
+        return back()->with('success', 'Achievement added!');
+    }
+
+    public function updateAchievement(Request $request, Achievement $achievement)
+    {
+        $request->validate(['title' => 'required|string|max:255']);
+        $achievement->update($request->only('title'));
+        return back()->with('success', 'Achievement updated!');
+    }
+
+    public function deleteAchievement(Achievement $achievement)
+    {
+        $achievement->delete();
+        return back()->with('success', 'Achievement deleted!');
+    }
+}
