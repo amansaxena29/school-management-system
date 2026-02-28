@@ -58,6 +58,7 @@
     <nav>
         <a href="{{ route('teacher.dashboard') }}">🏠 Dashboard</a>
         <a href="{{ route('teacher.attendance') }}" class="active">📋 Attendance</a>
+         <a href="{{ route('teacher.exams.index') }}">📝 Examinations</a>
     </nav>
     <div class="sidebar-footer">
         <form class="logout-form" method="POST" action="{{ route('teacher.logout') }}">

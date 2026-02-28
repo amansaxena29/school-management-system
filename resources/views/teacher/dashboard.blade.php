@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard - Arya Public Academy</title>
+    <title>Teacher Dashboard</title>
      <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
