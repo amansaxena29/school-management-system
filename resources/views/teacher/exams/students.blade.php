@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students - Teacher Panel</title>
+    <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; display: flex; min-height: 100vh; }
@@ -46,7 +47,7 @@
         .btn.primary { border-color: rgba(56,189,248,0.20); background: linear-gradient(90deg, rgba(56,189,248,0.20), rgba(129,140,248,0.16)); color: #dbeafe; }
 
         .alert { margin-top: 14px; padding: 12px 14px; border-radius: 16px; font-weight: 900; }
-        .alert.success { border: 1px solid rgba(34,197,94,0.25); background: rgba(34,197,94,0.14); color: #bbf7d0; }
+        .alert.success { border: 1px solid rgba(34,197,94,0.25); background: rgba(34,197,94,0.14); color:black; }
         .alert.error { border: 1px solid rgba(239,68,68,0.25); background: rgba(239,68,68,0.14); color: #fecaca; }
 
         .table-card { margin-top: 16px; border-radius: 22px; overflow: hidden; border: 1px solid rgba(255,255,255,0.10); background: radial-gradient(700px 260px at 15% 0%, rgba(56,189,248,0.10), transparent 55%), linear-gradient(180deg, rgba(11,18,36,0.92), rgba(2,6,23,0.92)); box-shadow: 0 18px 60px rgba(0,0,0,0.35); }

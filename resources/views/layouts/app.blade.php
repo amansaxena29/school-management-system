@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arya Director Login</title>
+    <title>Director Login</title>
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
 
     <style>
