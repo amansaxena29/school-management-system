@@ -246,6 +246,7 @@
     <nav>
         <a href="{{ route('teacher.dashboard') }}" class="active">🏠 Dashboard</a>
         <a href="{{ route('teacher.attendance') }}">📋 Attendance</a>
+        <a href="{{ route('teacher.exams.index') }}">📝 Examinations</a>
         {{-- Add more links here later e.g. My Students, Attendance, etc. --}}
     </nav>
     <div class="sidebar-footer">

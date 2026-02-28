@@ -167,4 +167,90 @@ class TeacherAuthController extends Controller
         return redirect()->route('teacher.attendance.viewForm')
             ->with('success', 'Attendance updated successfully!');
     }
+
+    // ===================== EXAMINATIONS =====================
+
+public function examIndex()
+{
+    return view('teacher.exams.index');
+}
+
+public function examClasses($type)
+{
+    $classes = range(1, 12);
+    return view('teacher.exams.classes', compact('type', 'classes'));
+}
+
+public function examStudents($type, $class)
+{
+    $year = request('year', date('Y'));
+
+    $students = \App\Models\Student::where('class', $class)
+                ->orderBy('roll_no')->get();
+
+    $results = \App\Models\Result::where('exam_name', $type)
+               ->where('year', $year)
+               ->whereIn('student_id', $students->pluck('id'))
+               ->get()->keyBy('student_id');
+
+    $resultMap = $results;
+
+    return view('teacher.exams.students', compact(
+        'type', 'class', 'students', 'resultMap', 'year'
+    ));
+}
+
+public function examEntry($type, $class, $studentId)
+{
+    $student = \App\Models\Student::findOrFail($studentId);
+    $year    = request('year', date('Y'));
+
+    $result = \App\Models\Result::where('student_id', $studentId)
+              ->where('exam_name', $type)
+              ->where('year', $year)
+              ->first();
+
+    $template = collect();
+
+    return view('teacher.exams.entry', compact(
+        'type', 'class', 'student', 'result', 'year', 'template'
+    ));
+}
+
+public function examStore(\Illuminate\Http\Request $request)
+{
+    $studentId = $request->student_id;
+    $examName  = $request->exam_name;
+    $year      = $request->year;
+
+    $result = \App\Models\Result::updateOrCreate(
+        [
+            'student_id' => $studentId,
+            'exam_name'  => $examName,
+            'year'       => $year,
+        ],
+        [
+            'is_published' => $request->has('is_published') ? 1 : 0,
+        ]
+    );
+
+    // Delete old subjects and re-insert
+    $result->subjects()->delete();
+
+    if ($request->subjects) {
+        foreach ($request->subjects as $sub) {
+            if (!empty($sub['name'])) {
+                $result->subjects()->create([
+                    'subject'   => $sub['name'],
+                    'marks'     => $sub['marks'] ?? 0,
+                    'max_marks' => $sub['max'] ?? 100,
+                    'grade'     => $sub['grade'] ?? null,
+                ]);
+            }
+        }
+    }
+
+    return redirect()->route('teacher.exams.students', [$examName, $request->input('class', 1)])
+                     ->with('success', 'Marks saved successfully!');
+}
 }

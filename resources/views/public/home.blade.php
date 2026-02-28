@@ -351,9 +351,13 @@
     }
 
     .brand-text {
-      font-weight: 900;
-      font-size: 28px;
-      line-height: 1;
+       font-weight: 900;
+       font-size: 25px;
+       line-height: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
     }
 
     /* Mobile */

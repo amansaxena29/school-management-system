@@ -193,6 +193,13 @@ Route::prefix('teacher')->name('teacher.')->group(function () {
         Route::post('/attendance/view',        [TeacherAuthController::class, 'attendanceView'])->name('attendance.view');
         Route::get('/attendance/edit/{id}',    [TeacherAuthController::class, 'attendanceEdit'])->name('attendance.edit');
         Route::put('/attendance/update/{id}',  [TeacherAuthController::class, 'attendanceUpdate'])->name('attendance.update');
+
+      // Teacher Examination Routes
+        Route::get('/examinations', [TeacherAuthController::class, 'examIndex'])->name('exams.index');
+        Route::get('/examinations/{type}', [TeacherAuthController::class, 'examClasses'])->name('exams.classes');
+        Route::get('/examinations/{type}/class/{class}', [TeacherAuthController::class, 'examStudents'])->name('exams.students');
+        Route::get('/examinations/{type}/class/{class}/student/{student}', [TeacherAuthController::class, 'examEntry'])->name('exams.entry');
+        Route::post('/examinations/results/store', [TeacherAuthController::class, 'examStore'])->name('results.store');
     });
 
 });
