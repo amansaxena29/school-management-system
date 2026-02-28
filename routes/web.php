@@ -24,6 +24,8 @@ Route::get('/result/download', [PublicResultController::class, 'download'])
     ->name('public.result.download');
 
 
+
+
 // Route::get('/', function () {
 //     return view('welcome');
 // });
@@ -140,6 +142,21 @@ Route::get('/examinations/{type}/class/{class}/subjects', [ExaminationController
 Route::post('/examinations/{type}/class/{class}/subjects', [ExaminationController::class, 'saveSubjects'])
     ->name('exams.subjects.save');
 
+
+});
+
+// ===================== TEACHER ROUTES =====================
+Route::prefix('teacher')->name('teacher.')->group(function () {
+
+    // Guest routes (no login required)
+    Route::get('/login',  [TeacherAuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [TeacherAuthController::class, 'login'])->name('login.post');
+    Route::post('/logout', [TeacherAuthController::class, 'logout'])->name('logout');
+
+    // Protected teacher routes (must be logged in as teacher)
+    Route::middleware('teacher')->group(function () {
+        Route::get('/dashboard', [TeacherAuthController::class, 'dashboard'])->name('dashboard');
+    });
 
 });
 

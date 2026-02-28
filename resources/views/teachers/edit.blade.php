@@ -376,6 +376,12 @@
           </div>
         </div>
 
+        <!-- Password Field -->
+        <div class="form-group">
+            <label>Set / Update Password <small style="color:#888;">(leave blank to keep existing)</small></label>
+            <input type="password" name="password" class="form-control" placeholder="Enter new password (optional)">
+        </div>
+
       </div>
 
       <div class="card-footer">

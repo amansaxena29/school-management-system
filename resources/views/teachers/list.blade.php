@@ -375,7 +375,7 @@
               <td class="muted">{{ $t->phone ?? $t->phone_number ?? '-' }}</td>
 
               <td class="muted">
-                 {{ $t->doj ? $t->doj->format('d/m/Y') : '-' }}
+                 {{ $t->doj ? \Carbon\Carbon::parse($t->doj)->format('d/m/Y') : '-' }}
                </td>
 
 

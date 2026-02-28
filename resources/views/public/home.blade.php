@@ -349,6 +349,13 @@
     ">
     Login as Admin
   </a>
+
+  <a href="{{ route('teacher.login') }}"
+   style="background:#f97316; color:#fff; padding:10px 22px;
+          border-radius:999px; text-decoration:none;
+          font-weight:600; font-size:0.95rem;">
+    Login as Teacher
+</a>
 </nav>
 
   <!-- Hero -->
