@@ -7,6 +7,7 @@ use App\Models\SiteSetting;
 use App\Models\Course;
 use App\Models\Gallery;
 use App\Models\Achievement;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -15,21 +16,22 @@ class CmsController extends Controller
     // ===================== CMS DASHBOARD =====================
     public function index()
     {
-        $courses      = Course::all();
-        $gallery      = Gallery::all();
-        $achievements = Achievement::all();
-        return view('admin.cms.index', compact('courses', 'gallery', 'achievements'));
+        $courses       = Course::all();
+        $gallery       = Gallery::all();
+        $achievements  = Achievement::all();
+        $announcements = Announcement::latest()->get();
+        return view('admin.cms.index', compact('courses', 'gallery', 'achievements', 'announcements'));
     }
 
-    // ===================== SITE SETTINGS (Hero, About, Footer) =====================
+    // ===================== SITE SETTINGS =====================
     public function updateSettings(Request $request)
     {
         $request->validate([
-            'hero_title'    => 'required|string|max:255',
-            'hero_subtitle' => 'required|string|max:255',
-            'about_text'    => 'required|string',
-            'footer_contact'=> 'nullable|string',
-            'footer_address'=> 'nullable|string',
+            'hero_title'     => 'required|string|max:255',
+            'hero_subtitle'  => 'required|string|max:255',
+            'about_text'     => 'required|string',
+            'footer_contact' => 'nullable|string',
+            'footer_address' => 'nullable|string',
         ]);
 
         SiteSetting::set('hero_title',     $request->hero_title);
@@ -48,7 +50,6 @@ class CmsController extends Controller
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
         ]);
-
         Course::create($request->only('title', 'description'));
         return back()->with('success', 'Course added successfully!');
     }
@@ -59,7 +60,6 @@ class CmsController extends Controller
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
         ]);
-
         $course->update($request->only('title', 'description'));
         return back()->with('success', 'Course updated successfully!');
     }
@@ -81,17 +81,9 @@ class CmsController extends Controller
 
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('gallery', 'public');
-            Gallery::create([
-                'image_path' => $path,
-                'caption'    => $request->caption,
-                'is_url'     => false,
-            ]);
+            Gallery::create(['image_path' => $path, 'caption' => $request->caption, 'is_url' => false]);
         } elseif ($request->filled('image_url')) {
-            Gallery::create([
-                'image_path' => $request->image_url,
-                'caption'    => $request->caption,
-                'is_url'     => true,
-            ]);
+            Gallery::create(['image_path' => $request->image_url, 'caption' => $request->caption, 'is_url' => true]);
         } else {
             return back()->withErrors(['image' => 'Please upload an image or provide a URL.']);
         }
@@ -101,7 +93,6 @@ class CmsController extends Controller
 
     public function deleteGallery(Gallery $gallery)
     {
-        // Delete file from storage if it was uploaded
         if (!$gallery->is_url && Storage::disk('public')->exists($gallery->image_path)) {
             Storage::disk('public')->delete($gallery->image_path);
         }
@@ -128,5 +119,38 @@ class CmsController extends Controller
     {
         $achievement->delete();
         return back()->with('success', 'Achievement deleted!');
+    }
+
+    // ===================== ANNOUNCEMENTS =====================
+    public function storeAnnouncement(Request $request)
+    {
+        $request->validate([
+            'title'      => 'required|string|max:255',
+            'body'       => 'nullable|string|max:1000',
+            'type'       => 'required|in:info,warning,success,urgent',
+            'expires_at' => 'nullable|date|after:today',
+        ]);
+
+        Announcement::create([
+            'title'      => $request->title,
+            'body'       => $request->body,
+            'type'       => $request->type,
+            'expires_at' => $request->expires_at ?: null,
+            'is_active'  => true,
+        ]);
+
+        return back()->with('success', 'Announcement added!');
+    }
+
+    public function toggleAnnouncement(Announcement $announcement)
+    {
+        $announcement->update(['is_active' => !$announcement->is_active]);
+        return back()->with('success', 'Announcement status updated!');
+    }
+
+    public function deleteAnnouncement(Announcement $announcement)
+    {
+        $announcement->delete();
+        return back()->with('success', 'Announcement deleted!');
     }
 }

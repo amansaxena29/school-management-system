@@ -1,507 +1,375 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arya Public Academy</title>
-  <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* --- Global Styles --- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+@extends('layouts.public')
 
-    body {
-      background: linear-gradient(135deg, #e0f7fa, #e1bee7);
-      color: #333;
-      scroll-behavior: smooth;
-    }
+@section('title', 'Home — Arya Public Academy')
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
+@section('extra_styles')
+<style>
+  /* Hero */
+  .hero-section {
+    position: relative;
+    min-height: 88vh;
+    border-radius: 24px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 48px;
+  }
 
-    img {
-      max-width: 100%;
-      border-radius: 20px;
-      display: block;
-      transition: transform 0.5s, box-shadow 0.5s;
-    }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;
+  }
 
-    img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-    }
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(15,10,30,0.97) 0%,
+      rgba(15,10,30,0.7) 40%,
+      rgba(15,10,30,0.2) 100%
+    );
+  }
 
-    /* --- Navbar --- */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 3rem;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(15px);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      border-bottom: 1px solid rgba(255,255,255,0.3);
-    }
+  .hero-text {
+    position: relative;
+    z-index: 1;
+    padding: 56px 48px;
+    max-width: 780px;
+  }
 
-    nav .logo {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #333;
-    }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #c4b5fd;
+    background: rgba(124,58,237,0.2);
+    border: 1px solid rgba(124,58,237,0.3);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
 
-    nav ul {
-      display: flex;
-      list-style: none;
-    }
+  .hero-h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: #fff;
+    margin-bottom: 20px;
+  }
 
-    nav ul li {
-      margin-left: 2rem;
-    }
+  .hero-h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, #a78bfa, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-    nav ul li a {
-      font-weight: 500;
-      padding: 5px 10px;
-      border-radius: 10px;
-      transition: 0.3s;
-    }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: rgba(232,228,240,0.75);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 32px;
+  }
 
-    nav ul li a:hover {
-      background: rgba(255, 255, 255, 0.3);
-      color: #000;
-    }
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
 
-    /* --- Nav Buttons --- */
-    .nav-buttons {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .cta-primary {
+    padding: 13px 28px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 8px 24px rgba(124,58,237,0.4);
+  }
 
-    .nav-buttons a {
-      padding: 8px 18px;
-      border-radius: 14px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
-    }
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(124,58,237,0.55);
+  }
 
-    .btn-admin {
-      background: linear-gradient(135deg, #4a148c, #8e24aa);
-      color: white !important;
-    }
+  .cta-secondary {
+    padding: 13px 28px;
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.2s;
+  }
 
-    .btn-teacher {
-      background: #f97316;
-      color: #fff !important;
-      border-radius: 999px !important;
-    }
+  .cta-secondary:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-2px);
+  }
 
-    /* --- Hero Section --- */
-    .hero {
-      height: 100vh;
-      background: url('https://images.unsplash.com/photo-1596496051084-8b98fc0d4c17?auto=format&fit=crop&w=1470&q=80') center/cover no-repeat;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+  }
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(10px);
-    }
+  .stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.2s;
+  }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      color: #222;
-      padding: 2rem;
-    }
+  .stat-card:hover {
+    border-color: rgba(124,58,237,0.3);
+    background: rgba(124,58,237,0.07);
+    transform: translateY(-3px);
+  }
 
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: 700;
-      color: #1a237e;
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 10px rgba(255,255,255,0.3);
-    }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #c4b5fd;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
 
-    .hero p {
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: #3e2723;
-      text-shadow: 1px 1px 6px rgba(255,255,255,0.3);
-    }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
-    /* --- Sections --- */
-    section {
-      padding: 5rem 2rem;
-      position: relative;
-    }
+  /* Quick links */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 6px;
+  }
 
-    section h2 {
-      text-align: center;
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      color: #1a237e;
-      position: relative;
-    }
+  .section-sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
 
-    section h2::after {
-      content: '';
-      width: 120px;
-      height: 4px;
-      background: #8e24aa;
-      display: block;
-      margin: 10px auto 0 auto;
-      border-radius: 2px;
-    }
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 48px;
+  }
 
-    .about p {
-      text-align: center;
-      max-width: 800px;
-      margin: 0 auto;
-      font-size: 1.2rem;
-      line-height: 1.8;
-      color: #333;
-    }
+  .quick-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+    padding: 22px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    /* --- Courses Grid with Glass Effect --- */
-    .courses-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 2rem;
-    }
+  .quick-card:hover {
+    background: rgba(124,58,237,0.1);
+    border-color: rgba(124,58,237,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+  }
 
-    .course-card {
-      background: rgba(255,255,255,0.15);
-      border-radius: 25px;
-      padding: 2rem;
-      text-align: center;
-      transition: transform 0.5s, box-shadow 0.5s;
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba(255,255,255,0.3);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    }
+  .quick-icon {
+    font-size: 1.8rem;
+    width: 48px; height: 48px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.06);
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
 
-    .course-card:hover {
-      transform: translateY(-15px);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-    }
+  .quick-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #fff;
+  }
 
-    .course-card h3 {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-      color: #4a148c;
-    }
+  .quick-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
 
-    .course-card p {
-      font-size: 1rem;
-      color: #222;
-    }
+  .quick-arrow {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-top: auto;
+    transition: transform 0.2s;
+  }
 
-    /* --- Gallery Section --- */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
+  .quick-card:hover .quick-arrow {
+    transform: translateX(4px);
+    color: #c4b5fd;
+  }
 
-    /* ✅ Fixed: All gallery images same size */
-    .gallery-grid .gallery-item {
-      width: 100%;
-      height: 260px;
-      overflow: hidden;
-      border-radius: 25px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+  /* Notice strip */
+  .notice-strip {
+    background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(249,115,22,0.1));
+    border: 1px solid rgba(124,58,237,0.25);
+    border-radius: 16px;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
 
-    .gallery-grid .gallery-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 25px;
-      display: block;
-      transition: transform 0.5s, box-shadow 0.5s;
-    }
+  .notice-badge {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
 
-    .gallery-grid .gallery-item img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-    }
+  .notice-text {
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.6;
+    flex: 1;
+  }
 
-    /* --- Achievements --- */
-    .achievements ul {
-      list-style: disc inside;
-      max-width: 800px;
-      margin: 0 auto;
-      font-size: 1.2rem;
-      line-height: 1.8;
-      color: #333;
-    }
+  @media (max-width: 900px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .quick-grid { grid-template-columns: repeat(2, 1fr); }
+  }
 
-    /* --- Contact Form --- */
-    .contact form {
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
+  @media (max-width: 560px) {
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .quick-grid { grid-template-columns: 1fr; }
+    .hero-text { padding: 32px 24px; }
+  }
+</style>
+@endsection
 
-    .contact form input,
-    .contact form textarea {
-      padding: 1rem;
-      margin-bottom: 1rem;
-      border-radius: 25px;
-      border: none;
-      outline: none;
-      background: rgba(255,255,255,0.2);
-      color: #333;
-      font-weight: 500;
-      backdrop-filter: blur(15px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      transition: 0.3s;
-    }
+@section('content')
 
-    .contact form input::placeholder,
-    .contact form textarea::placeholder {
-      color: #555;
-    }
-
-    .contact form button {
-      padding: 1rem;
-      border: none;
-      background: linear-gradient(135deg, #8e24aa, #4a148c);
-      color: #fff;
-      font-size: 1.2rem;
-      font-weight: 600;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .contact form button:hover {
-      background: linear-gradient(135deg, #4a148c, #8e24aa);
-      transform: scale(1.05);
-    }
-
-    /* --- Footer --- */
-    footer {
-      background: linear-gradient(to right, #2e1a47, #4a148c);
-      color: #fff;
-      text-align: center;
-      padding: 2rem;
-      font-size: 1rem;
-    }
-
-    /* --- Responsive --- */
-    @media(max-width:768px){
-      nav ul {
-        flex-direction: column;
-        background: rgba(255,255,255,0.25);
-        position: absolute;
-        top: 70px;
-        right: 0;
-        width: 100%;
-        display: none;
-      }
-      nav ul li {
-        margin: 1rem 0;
-      }
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .brand-logo {
-      width: 42px;
-      height: 42px;
-      object-fit: contain;
-      border-radius: 10px;
-    }
-
-    .brand-text {
-       font-weight: 900;
-       font-size: 25px;
-       line-height: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-    }
-
-    /* Mobile */
-    @media (max-width: 768px){
-      .brand-text { font-size: 22px; }
-      .brand-logo { width: 34px; height: 34px; }
-    }
-
-  </style>
-</head>
-<body>
-
-  <!-- Navbar -->
-  <nav>
-    <a href="{{ url('/') }}" class="brand">
-      <img src="{{ asset('images/school-logo.png') }}" alt="Arya Public Academy" class="brand-logo">
-      <span class="brand-text">Arya Public Academy</span>
-    </a>
-
-    <ul>
-      <li></li>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#courses">Courses</a></li>
-      <li><a href="#gallery">Gallery</a></li>
-      <li><a href="#achievements">Achievements</a></li>
-      <li><a href="#contact">Contact</a></li>
-      {{-- <li><a href="{{ url('/result') }}">Result</a></li> --}}
-    </ul>
-
-    {{-- ✅ Fixed: Both buttons properly aligned in a flex row --}}
-    <div class="nav-buttons">
-      <a href="/login" class="btn-admin">Login as Admin</a>
-      <a href="{{ route('teacher.login') }}" class="btn-teacher">Login as Teacher</a>
+<!-- HERO -->
+<div class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-text">
+    <div class="hero-eyebrow">✦ Est. 2010 · Kusmara, Jalaun</div>
+    <h1 class="hero-h1">
+      {{ \App\Models\SiteSetting::get('hero_title', 'Welcome to') }}<br>
+      <em>Arya Public Academy</em>
+    </h1>
+    <p class="hero-sub">
+      {{ \App\Models\SiteSetting::get('hero_subtitle', 'Empowering students with creativity, knowledge, and confidence') }}
+    </p>
+    <div class="hero-ctas">
+      <a href="{{ url('/about') }}" class="cta-primary">Discover Our School →</a>
+      <a href="{{ url('/contact') }}" class="cta-secondary">Get in Touch</a>
     </div>
-  </nav>
+  </div>
+</div>
 
-  <!-- Hero -->
-  <section class="hero" id="home">
-    <div class="hero-content">
-      <h1>{{ \App\Models\SiteSetting::get('hero_title', 'Welcome to Your School') }}</h1>
-      <p>{{ \App\Models\SiteSetting::get('hero_subtitle', 'Empowering students with creativity, knowledge, and confidence') }}</p>
-    </div>
-  </section>
+{{-- <!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-num">12+</div>
+    <div class="stat-label">Classes</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">500+</div>
+    <div class="stat-label">Students</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">30+</div>
+    <div class="stat-label">Teachers</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">15+</div>
+    <div class="stat-label">Years</div>
+  </div>
+</div> --}}
 
-  <!-- About -->
-  <section class="about" id="about">
-    <h2>About Us</h2>
-    <p>{{ \App\Models\SiteSetting::get('about_text', 'Our school fosters academic excellence and personal growth with innovative teaching, modern infrastructure, and a focus on creativity and critical thinking. Join us to explore a world of opportunities.') }}</p>
-  </section>
+<!-- NOTICE -->
+{{-- <div class="notice-strip">
+  <span class="notice-badge">📢 Notice</span>
+  <span class="notice-text">Results & marksheets for Half Yearly and Annual exams are now available online. Students can check their results through the portal.</span>
+</div> --}}
 
-  <!-- Courses -->
-  <section class="courses" id="courses">
-    <h2>Our Courses</h2>
-    <div class="courses-grid">
-      @forelse(\App\Models\Course::all() as $course)
-        <div class="course-card">
-          <h3>{{ $course->title }}</h3>
-          <p>{{ $course->description }}</p>
-        </div>
-      @empty
-        <p style="text-align:center; color:#888;">No courses available yet.</p>
-      @endforelse
-    </div>
-  </section>
+<!-- QUICK LINKS -->
+<div class="section-title">Explore</div>
+<div class="section-sub">Everything you need, one click away</div>
 
-  <!-- Gallery -->
-  <section class="gallery" id="gallery">
-    <h2>Gallery</h2>
-    <div class="gallery-grid">
-      {{-- ✅ Fixed: Wrapped in .gallery-item div for uniform size --}}
-      @forelse(\App\Models\Gallery::all() as $img)
-        <div class="gallery-item">
-          <img
-            src="{{ $img->is_url ? $img->image_path : asset('storage/' . $img->image_path) }}"
-            alt="{{ $img->caption ?? 'Gallery Image' }}">
-        </div>
-      @empty
-        <p style="text-align:center; color:#888;">No images in gallery yet.</p>
-      @endforelse
-    </div>
-  </section>
+<div class="quick-grid">
+  <a href="{{ url('/about') }}" class="quick-card">
+    <div class="quick-icon">🏫</div>
+    <div class="quick-title">About Us</div>
+    <div class="quick-desc">Learn about our history, values, and our commitment to excellence in education.</div>
+    <div class="quick-arrow">→</div>
+  </a>
+  <a href="{{ url('/courses') }}" class="quick-card">
+    <div class="quick-icon">📚</div>
+    <div class="quick-title">Our Courses</div>
+    <div class="quick-desc">Explore our comprehensive curriculum designed to bring out the best in every student.</div>
+    <div class="quick-arrow">→</div>
+  </a>
+  <a href="{{ url('/gallery') }}" class="quick-card">
+    <div class="quick-icon">🖼️</div>
+    <div class="quick-title">Gallery</div>
+    <div class="quick-desc">Memories, events, and moments from our vibrant school life and activities.</div>
+    <div class="quick-arrow">→</div>
+  </a>
+  <a href="{{ url('/achievements') }}" class="quick-card">
+    <div class="quick-icon">🏆</div>
+    <div class="quick-title">Achievements</div>
+    <div class="quick-desc">Celebrating our students' and institution's milestones and accomplishments.</div>
+    <div class="quick-arrow">→</div>
+  </a>
+  <a href="{{ url('/contact') }}" class="quick-card">
+    <div class="quick-icon">✉️</div>
+    <div class="quick-title">Contact Us</div>
+    <div class="quick-desc">Reach out to us for admissions, queries, or any information you need.</div>
+    <div class="quick-arrow">→</div>
+  </a>
+  {{-- <a href="{{ url('/result') }}" class="quick-card">
+    <div class="quick-icon">📋</div>
+    <div class="quick-title">Check Results</div>
+    <div class="quick-desc">Students can view their exam results and download marksheets online.</div>
+    <div class="quick-arrow">→</div>
+  </a> --}}
+</div>
 
-  <!-- Achievements -->
-  <section class="achievements" id="achievements">
-    <h2>Achievements</h2>
-    <ul>
-      @forelse(\App\Models\Achievement::all() as $ach)
-        <li>{{ $ach->title }}</li>
-      @empty
-        <li>No achievements added yet.</li>
-      @endforelse
-    </ul>
-  </section>
-
-  <!-- Contact -->
-<section class="contact" id="contact">
-    <h2>Contact Us</h2>
-
-    {{-- Success Message --}}
-    @if(session('message_sent'))
-        <div style="max-width:600px; margin:0 auto 20px auto;
-                    background:#d1fae5; border:1px solid #6ee7b7;
-                    color:#065f46; padding:14px 20px;
-                    border-radius:25px; text-align:center; font-weight:500;">
-            ✅ {{ session('message_sent') }}
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('contact.store') }}">
-        @csrf
-        <input type="text" name="name"
-               value="{{ old('name') }}"
-               placeholder="Your Name" required>
-
-        @error('name')
-            <p style="color:red; font-size:0.8rem; margin:-10px 0 10px 14px;">{{ $message }}</p>
-        @enderror
-
-        <input type="email" name="email"
-               value="{{ old('email') }}"
-               placeholder="Your Email" required>
-
-        @error('email')
-            <p style="color:red; font-size:0.8rem; margin:-10px 0 10px 14px;">{{ $message }}</p>
-        @enderror
-
-        <textarea name="message" placeholder="Your Message"
-                  rows="5" required>{{ old('message') }}</textarea>
-
-        @error('message')
-            <p style="color:red; font-size:0.8rem; margin:-10px 0 10px 14px;">{{ $message }}</p>
-        @enderror
-
-        <button type="submit">Send Message</button>
-    </form>
-</section>
-
-  <!-- Footer -->
-  <footer>
-    <p>© 2025 Arya Public Academy. All rights reserved.</p> <br>
-    <p>Contact Number : {{ \App\Models\SiteSetting::get('footer_contact', '8127515044') }}</p> <br>
-    <p>{{ \App\Models\SiteSetting::get('footer_address', 'Kusmara, Jalaun (U.P)') }}</p>
-  </footer>
-
-</body>
-</html>
+@endsection

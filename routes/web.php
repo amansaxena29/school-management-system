@@ -11,6 +11,8 @@ use App\Http\Controllers\PublicResultController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\MarksheetController;
 use App\Http\Controllers\ExaminationController;
+use App\Http\Controllers\CmsController;
+
 
 Route::get('/', function () {
     return view('public.home');
@@ -22,6 +24,15 @@ Route::post('/result', [PublicResultController::class, 'show'])->name('public.re
 // Result PDF route
 Route::get('/result/download', [PublicResultController::class, 'download'])
     ->name('public.result.download');
+
+    // Public website pages
+Route::get('/',             fn() => view('public.home'))->name('home');
+Route::get('/about',        fn() => view('public.about'))->name('about');
+Route::get('/courses',      fn() => view('public.courses'))->name('courses');
+Route::get('/gallery',      fn() => view('public.gallery'))->name('gallery');
+Route::get('/achievements', fn() => view('public.achievements'))->name('achievements');
+Route::get('/announcements', fn() => view('public.announcements'))->name('announcements');
+Route::get('/contact',      fn() => view('public.contact'))->name('public.contact');
 
 
 
@@ -171,6 +182,9 @@ Route::get('/contact-messages', [App\Http\Controllers\ContactController::class, 
 Route::post('/contact-messages/{message}/read', [App\Http\Controllers\ContactController::class, 'markRead'])->name('contact.read');
 Route::delete('/contact-messages/{message}', [App\Http\Controllers\ContactController::class, 'destroy'])->name('contact.destroy');
 
+Route::post('/cms/announcements',          [CmsController::class, 'storeAnnouncement'])->name('cms.announcements.store');
+Route::patch('/cms/announcements/{announcement}/toggle', [CmsController::class, 'toggleAnnouncement'])->name('cms.announcements.toggle');
+Route::delete('/cms/announcements/{announcement}',       [CmsController::class, 'deleteAnnouncement'])->name('cms.announcements.delete');
 
 });
 

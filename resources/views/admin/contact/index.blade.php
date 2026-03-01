@@ -32,7 +32,7 @@
                 </h3>
                 <p style="color:#64748b; font-size:0.85rem;">
                     📧 {{ $msg->email }} &nbsp;|&nbsp;
-                    🕐 {{ $msg->created_at->format('d M Y, h:i A') }}
+                    🕐 {{ $msg->created_at->format('d M Y') }}
                 </p>
             </div>
 
