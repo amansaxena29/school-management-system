@@ -548,7 +548,7 @@
   </div>
 
   <footer style="border-top:1px solid rgba(255,255,255,0.08); padding:22px 48px; color:var(--muted); font-size:0.8rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-top:auto;">
-    <span>© 2025 Arya Public Academy. All rights reserved.</span>
+    <span>© Arya Public Academy. All rights reserved.</span>
     <span>📞 {{ \App\Models\SiteSetting::get('footer_contact', '8127515044') }} &nbsp;|&nbsp; 📍 {{ \App\Models\SiteSetting::get('footer_address', 'Kusmara, Jalaun (U.P)') }}</span>
   </footer>
 </main>
