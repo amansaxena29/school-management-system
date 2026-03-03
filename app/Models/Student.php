@@ -26,5 +26,10 @@ public function results()
     return $this->hasMany(Result::class);
 }
 
+public function fee()
+{
+    return $this->hasOne(Fee::class);
+}
+
 
 }

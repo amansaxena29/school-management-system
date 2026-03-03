@@ -10,7 +10,6 @@ use App\Models\Achievement;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Storage;
 
-
 class CmsController extends Controller
 {
     // ===================== CMS DASHBOARD =====================
@@ -70,20 +69,30 @@ class CmsController extends Controller
         return back()->with('success', 'Course deleted!');
     }
 
-    // ===================== GALLERY =====================
+    // ===================== GALLERY — IMAGES =====================
     public function storeGallery(Request $request)
     {
         $request->validate([
             'caption'    => 'nullable|string|max:255',
-            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'image_url'  => 'nullable|url',
         ]);
 
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('gallery', 'public');
-            Gallery::create(['image_path' => $path, 'caption' => $request->caption, 'is_url' => false]);
+            Gallery::create([
+                'image_path' => $path,
+                'caption'    => $request->caption,
+                'is_url'     => false,
+                'type'       => 'image',
+            ]);
         } elseif ($request->filled('image_url')) {
-            Gallery::create(['image_path' => $request->image_url, 'caption' => $request->caption, 'is_url' => true]);
+            Gallery::create([
+                'image_path' => $request->image_url,
+                'caption'    => $request->caption,
+                'is_url'     => true,
+                'type'       => 'image',
+            ]);
         } else {
             return back()->withErrors(['image' => 'Please upload an image or provide a URL.']);
         }
@@ -93,11 +102,51 @@ class CmsController extends Controller
 
     public function deleteGallery(Gallery $gallery)
     {
-        if (!$gallery->is_url && Storage::disk('public')->exists($gallery->image_path)) {
-            Storage::disk('public')->delete($gallery->image_path);
+        if (!$gallery->is_url && $gallery->type === 'image') {
+            if (Storage::disk('public')->exists($gallery->image_path)) {
+                Storage::disk('public')->delete($gallery->image_path);
+            }
+        }
+        if ($gallery->type === 'video' && $gallery->video_path) {
+            if (Storage::disk('public')->exists($gallery->video_path)) {
+                Storage::disk('public')->delete($gallery->video_path);
+            }
         }
         $gallery->delete();
-        return back()->with('success', 'Image deleted!');
+        return back()->with('success', 'Item deleted from gallery!');
+    }
+
+    // ===================== GALLERY — VIDEOS =====================
+    public function storeVideo(Request $request)
+    {
+        $request->validate([
+            'caption'    => 'nullable|string|max:255',
+            'video_file' => 'nullable|mimes:mp4,mov,avi,webm|max:51200', // 50MB max
+            'video_url'  => 'nullable|url',
+        ]);
+
+        if ($request->hasFile('video_file')) {
+            $path = $request->file('video_file')->store('gallery/videos', 'public');
+           Gallery::create([
+                'image_path' => $path,  // store video path here too so column is never null
+                'video_path' => $path,
+                'caption'    => $request->caption,
+                'is_url'     => false,
+                'type'       => 'video',
+            ]);
+        } elseif ($request->filled('video_url')) {
+            Gallery::create([
+                'image_path' => $request->video_url,
+                'video_path' => null,
+                'caption'    => $request->caption,
+                'is_url'     => true,
+                'type'       => 'video',
+            ]);
+        } else {
+            return back()->withErrors(['video' => 'Please upload a video file or provide a URL.']);
+        }
+
+        return back()->with('success', 'Video added to gallery!');
     }
 
     // ===================== ACHIEVEMENTS =====================

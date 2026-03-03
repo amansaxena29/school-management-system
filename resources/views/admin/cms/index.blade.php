@@ -533,6 +533,33 @@
 .cms-empty .cms-empty-icon { font-size: 2rem; margin-bottom: 8px; }
 .cms-empty p { font-size: 0.83rem; }
 
+/* Gallery tabs */
+.cms-gallery-tabs {
+    display: flex; gap: 8px; margin-bottom: 20px;
+}
+.cms-gtab {
+    padding: 9px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05); color: var(--text-mid);
+    font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s;
+}
+.cms-gtab.active {
+    background: rgba(15,244,198,0.12);
+    border-color: rgba(15,244,198,0.35);
+    color: var(--cyan);
+}
+.cms-gtab:hover:not(.active) { background: rgba(255,255,255,0.08); color: var(--text-hi); }
+
+/* Video item badge */
+.cms-video-item { position: relative; }
+.cms-video-play-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(100,112,255,0.85);
+    color: #fff; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.1em; padding: 3px 8px;
+    border-radius: 99px;
+}
+
 /* Responsive */
 @media(max-width: 700px) {
     .cms-wrap { padding: 28px 14px 60px; }
@@ -679,21 +706,28 @@
     </div>
 
     {{-- ════════════════════════════════
-         GALLERY
-    ════════════════════════════════ --}}
-    <div class="cms-panel">
-        <div class="cms-panel-header">
-            <div class="cms-panel-icon">🖼️</div>
-            <div>
-                <div class="cms-panel-title">Gallery</div>
-                <div class="cms-panel-sub">Upload images or add via URL</div>
-            </div>
+     GALLERY
+════════════════════════════════ --}}
+<div class="cms-panel">
+    <div class="cms-panel-header">
+        <div class="cms-panel-icon">🖼️</div>
+        <div>
+            <div class="cms-panel-title">Gallery</div>
+            <div class="cms-panel-sub">Upload images and videos for the public gallery</div>
         </div>
+    </div>
 
+    {{-- Tab switcher --}}
+    <div class="cms-gallery-tabs">
+        <button class="cms-gtab active" onclick="switchGalleryTab('images', this)">🖼️ Images</button>
+        <button class="cms-gtab" onclick="switchGalleryTab('videos', this)">🎬 Videos</button>
+    </div>
+
+    {{-- IMAGE UPLOAD FORM --}}
+    <div id="gallery-tab-images">
         <form method="POST" action="{{ route('cms.gallery.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="cms-gallery-upload-box">
-                {{-- Upload | OR | URL — same baseline --}}
                 <div class="cms-gallery-upload-row">
                     <div>
                         <label class="cms-label">Upload Image File</label>
@@ -705,8 +739,6 @@
                         <input class="cms-input" type="url" name="image_url" placeholder="https://...">
                     </div>
                 </div>
-
-                {{-- Caption + button on same row --}}
                 <div class="cms-gallery-caption-row">
                     <div>
                         <label class="cms-label">Caption (Optional)</label>
@@ -719,8 +751,10 @@
             </div>
         </form>
 
+        {{-- IMAGE GRID --}}
         <div class="cms-gallery-grid">
-            @forelse($gallery as $img)
+            @php $images = $gallery->where('type', 'image'); @endphp
+            @forelse($images as $img)
                 <div class="cms-gallery-item">
                     <img src="{{ $img->is_url ? $img->image_path : asset('storage/'.$img->image_path) }}"
                          alt="{{ $img->caption }}">
@@ -731,9 +765,7 @@
                         <form method="POST" action="{{ route('cms.gallery.delete', $img) }}"
                               onsubmit="return confirm('Delete this image?')">
                             @csrf @method('DELETE')
-                            <button type="submit"
-                                    class="cms-btn cms-btn-danger cms-btn-sm"
-                                    style="width:100%;">🗑 Delete</button>
+                            <button type="submit" class="cms-btn cms-btn-danger cms-btn-sm" style="width:100%;">🗑 Delete</button>
                         </form>
                     </div>
                 </div>
@@ -745,6 +777,80 @@
             @endforelse
         </div>
     </div>
+
+    {{-- VIDEO UPLOAD FORM --}}
+    <div id="gallery-tab-videos" style="display:none;">
+        <form method="POST" action="{{ route('cms.video.store') }}" enctype="multipart/form-data">
+            @csrf
+            <div class="cms-gallery-upload-box">
+                <div class="cms-gallery-upload-row">
+                    <div>
+                        <label class="cms-label">Upload Video File (MP4, max 50MB)</label>
+                        <input type="file" name="video_file" accept="video/*" class="cms-file-input">
+                    </div>
+                    <div class="cms-gallery-or">OR</div>
+                    <div>
+                        <label class="cms-label">Paste YouTube / Video URL</label>
+                        <input class="cms-input" type="url" name="video_url" placeholder="https://youtube.com/...">
+                    </div>
+                </div>
+                <div class="cms-gallery-caption-row">
+                    <div>
+                        <label class="cms-label">Caption (Optional)</label>
+                        <input class="cms-input" type="text" name="caption" placeholder="e.g. Annual Day 2025">
+                    </div>
+                    <div class="cms-btn-cell">
+                        <button type="submit" class="cms-btn cms-btn-success">+ Add Video</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {{-- VIDEO GRID --}}
+        <div class="cms-gallery-grid">
+            @php $videos = $gallery->where('type', 'video'); @endphp
+            @forelse($videos as $vid)
+                <div class="cms-gallery-item cms-video-item">
+                    @if($vid->is_url)
+                        @php
+                            // Convert YouTube watch URL to embed
+                            $yUrl = $vid->image_path;
+                            preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/', $yUrl, $m);
+                            $ytId = $m[1] ?? null;
+                        @endphp
+                        @if($ytId)
+                            <img src="https://img.youtube.com/vi/{{ $ytId }}/hqdefault.jpg"
+                                 alt="{{ $vid->caption }}" style="width:100%;height:110px;object-fit:cover;">
+                            <div class="cms-video-play-badge">▶ YouTube</div>
+                        @else
+                            <div style="width:100%;height:110px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.05);font-size:2rem;">🎬</div>
+                            <div class="cms-video-play-badge">▶ Video URL</div>
+                        @endif
+                    @else
+                        <div style="width:100%;height:110px;display:flex;align-items:center;justify-content:center;background:rgba(100,112,255,0.1);font-size:2.5rem;">🎬</div>
+                        <div class="cms-video-play-badge">▶ Uploaded</div>
+                    @endif
+
+                    @if($vid->caption)
+                        <div class="cms-gallery-caption-text">{{ $vid->caption }}</div>
+                    @endif
+                    <div class="cms-gallery-del-wrap">
+                        <form method="POST" action="{{ route('cms.gallery.delete', $vid) }}"
+                              onsubmit="return confirm('Delete this video?')">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="cms-btn cms-btn-danger cms-btn-sm" style="width:100%;">🗑 Delete</button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <div class="cms-empty" style="grid-column:1/-1;">
+                    <div class="cms-empty-icon">🎬</div>
+                    <p>No videos yet.</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</div>
 
     {{-- ════════════════════════════════
          ACHIEVEMENTS
@@ -902,5 +1008,12 @@
     </div>
 
 </div>
-
+<script>
+function switchGalleryTab(tab, btn) {
+    document.getElementById('gallery-tab-images').style.display = tab === 'images' ? 'block' : 'none';
+    document.getElementById('gallery-tab-videos').style.display = tab === 'videos' ? 'block' : 'none';
+    document.querySelectorAll('.cms-gtab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+</script>
 @endsection

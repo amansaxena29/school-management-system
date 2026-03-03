@@ -8,5 +8,5 @@ class Gallery extends Model
 {
     protected $table = 'gallery'; // ← This tells Laravel to use 'gallery' not 'galleries'
 
-    protected $fillable = ['image_path', 'caption', 'is_url'];
+    protected $fillable = ['image_path', 'caption', 'is_url', 'type', 'video_path'];
 }

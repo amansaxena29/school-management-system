@@ -75,18 +75,24 @@ Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers.ind
 Route::put('/teachers/{teacher}', [TeacherController::class, 'update'])->name('teachers.update');
 
 
+// ── FEES ─────────────────────────────────────────────────────────
 Route::resource('fees', FeeController::class);
+
 Route::get('/fees/class/{class}', [FeeController::class, 'classWise'])
     ->name('fees.class');
+
+Route::get('/fees/class/{class}/student/{student}', [FeeController::class, 'studentFee'])
+    ->name('fees.student');
+
+Route::post('/fees/class/{class}/student/{student}/update', [FeeController::class, 'updateStudentFee'])
+    ->name('fees.student.update');
 
 Route::post('/fees/class/{class}', [FeeController::class, 'storeClassWise'])
     ->name('fees.class.store');
 
-// show edit status page
 Route::get('/fees/{fee}/edit-status', [FeeController::class, 'editStatus'])
     ->name('fees.editStatus');
 
-// update status
 Route::put('/fees/{fee}/update-status', [FeeController::class, 'updateStatus'])
     ->name('fees.updateStatus');
 
@@ -171,6 +177,7 @@ Route::delete('/cms/courses/{course}', [App\Http\Controllers\CmsController::clas
 
 // Gallery
 Route::post('/cms/gallery', [App\Http\Controllers\CmsController::class, 'storeGallery'])->name('cms.gallery.store');
+Route::post('/cms/gallery/video', [App\Http\Controllers\CmsController::class, 'storeVideo'])->name('cms.video.store');
 Route::delete('/cms/gallery/{gallery}', [App\Http\Controllers\CmsController::class, 'deleteGallery'])->name('cms.gallery.delete');
 
 // Achievements

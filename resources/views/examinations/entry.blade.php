@@ -336,7 +336,6 @@
             <input name="subjects[{{ $i }}][name]" value="{{ $s->subject }}" placeholder="Subject" required>
             <input name="subjects[{{ $i }}][marks]" value="{{ $s->marks }}" placeholder="Marks" type="number" min="0" required>
             <input name="subjects[{{ $i }}][max]" value="{{ $s->max_marks }}" placeholder="Max" type="number" min="1" required>
-            {{-- <input name="subjects[{{ $i }}][grade]" value="{{ $s->grade ?? '' }}" placeholder="Grade (A1/A2...)" > --}}
             <button type="button" class="del" onclick="removeRow(this)">✕</button>
           </div>
         @endforeach
@@ -361,7 +360,6 @@ function addRow(){
     <input name="subjects[${idx}][name]" placeholder="Subject" required>
     <input name="subjects[${idx}][marks]" placeholder="Marks" type="number" min="0" required>
     <input name="subjects[${idx}][max]" placeholder="Max" type="number" min="1" value="100" required>
-    <input name="subjects[${idx}][grade]" placeholder="Grade (A1/A2...)" >
     <button type="button" class="del" onclick="removeRow(this)">✕</button>
   `;
   wrap.appendChild(div);

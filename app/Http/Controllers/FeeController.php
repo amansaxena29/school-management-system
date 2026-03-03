@@ -4,122 +4,165 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fee;
+use App\Models\Student;
 
 class FeeController extends Controller
 {
-    // Show all fees
-   public function index(Request $request)
-{
-    $search = $request->get('search'); // from input box
-
-    $feesQuery = Fee::query()->orderBy('class');
-
-    if (!empty($search)) {
-        $feesQuery->where('student_name', 'like', '%' . $search . '%');
-        // If you also want class search, uncomment below:
-        // $feesQuery->orWhere('class', 'like', '%' . $search . '%');
+    /**
+     * GET /fees
+     * Show 12 class cards
+     */
+    public function index()
+    {
+        return view('fees.index');
     }
 
-    $fees = $feesQuery->simplePaginate(5)->appends(['search' => $search]);
-
-    return view('fees.index', compact('fees', 'search'));
-}
-
-
-
-    // Show form to add fee
-    public function create(Request $request)
-{
-    $selectedClass = $request->get('class'); // class selected from dropdown
-    return view('fees.create', compact('selectedClass'));
-}
-
-
-    // Store fee
-    public function store(Request $request) {
-        $request->validate([
-            'student_name' => 'required|string|max:255',
-            'class' => 'required|integer|between:1,12',
-            'amount' => 'required|numeric',
-            'status' => 'required|in:pending,paid',
-        ]);
-
-        Fee::create($request->all());
-        return redirect()->route('fees.index')->with('success', 'Fee added successfully!');
-    }
-
-    // Edit fee
-    public function edit(Fee $fee) {
-        return view('fees.edit', compact('fee'));
-    }
-
-    // Update fee
-    public function update(Request $request, Fee $fee) {
-        $request->validate([
-            'student_name' => 'required|string|max:255',
-            'class' => 'required|integer|between:1,12',
-            'amount' => 'required|numeric',
-            'status' => 'required|in:pending,paid',
-        ]);
-
-        $fee->update($request->all());
-        return redirect()->route('fees.index')->with('success', 'Fee updated successfully!');
-    }
-
-    // Delete fee
-    public function destroy(Fee $fee) {
-        $fee->delete();
-        return redirect()->route('fees.index')->with('success', 'Fee details deleted successfully!');
-    }
-
+    /**
+     * GET /fees/class/{class}
+     * Show all students of a class with fee summary
+     */
     public function classWise($class)
-{
-    $fees = \App\Models\Fee::where('class', $class)->get();
+    {
+        $students = Student::where('class', $class)
+            ->orderBy('roll_no')
+            ->get();
 
-    return view('fees.class', compact('fees', 'class'));
-}
+        $feesMap = Fee::whereIn('student_id', $students->pluck('id'))
+            ->get()
+            ->keyBy('student_id');
 
-public function storeClassWise(Request $request, $class)
-{
-    $request->validate([
-        'student_name' => 'required',
-        'father_name'=>'required',
-        'amount' => 'required|numeric',
-        'status' => 'required'
-    ]);
+        return view('fees.class', compact('class', 'students', 'feesMap'));
+    }
 
-    Fee::create([
-        'class' => $class,
-        'student_name' => $request->student_name,
-        'father_name'  => $request->father_name,
-        'amount' => $request->amount,
-        'status' => $request->status
-    ]);
+    /**
+     * GET /fees/class/{class}/student/{student}
+     * Show individual student fee page with 5 installments
+     */
+    public function studentFee($class, $studentId)
+    {
+        $student = Student::where('id', $studentId)
+            ->where('class', $class)
+            ->firstOrFail();
 
-    return redirect()
-        ->route('fees.class', $class)
-        ->with('success', 'Fees added successfully');
-}
+        $fee = Fee::firstOrCreate(
+            ['student_id' => $student->id],
+            [
+                'class'        => $class,
+                'inst1_status' => 'pending',
+                'inst2_status' => 'pending',
+                'inst3_status' => 'pending',
+                'inst4_status' => 'pending',
+                'inst5_status' => 'pending',
+            ]
+        );
+
+        return view('fees.student', compact('student', 'fee', 'class'));
+    }
+
+    /**
+     * POST /fees/class/{class}/student/{student}/update
+     * Save all 5 installments
+     */
+    public function updateStudentFee(Request $request, $class, $studentId)
+    {
+        $student = Student::where('id', $studentId)
+            ->where('class', $class)
+            ->firstOrFail();
+
+        $request->validate([
+            'inst1_amount' => 'nullable|numeric|min:0',
+            'inst1_date'   => 'nullable|date',
+            'inst1_status' => 'required|in:paid,pending',
+            'inst2_amount' => 'nullable|numeric|min:0',
+            'inst2_date'   => 'nullable|date',
+            'inst2_status' => 'required|in:paid,pending',
+            'inst3_amount' => 'nullable|numeric|min:0',
+            'inst3_date'   => 'nullable|date',
+            'inst3_status' => 'required|in:paid,pending',
+            'inst4_amount' => 'nullable|numeric|min:0',
+            'inst4_date'   => 'nullable|date',
+            'inst4_status' => 'required|in:paid,pending',
+            'inst5_amount' => 'nullable|numeric|min:0',
+            'inst5_date'   => 'nullable|date',
+            'inst5_status' => 'required|in:paid,pending',
+        ]);
+
+        Fee::updateOrCreate(
+            ['student_id' => $student->id],
+            [
+                'class'        => $class,
+                'inst1_amount' => $request->inst1_amount ?: null,
+                'inst1_date'   => $request->inst1_date ?: null,
+                'inst1_status' => $request->inst1_status,
+                'inst2_amount' => $request->inst2_amount ?: null,
+                'inst2_date'   => $request->inst2_date ?: null,
+                'inst2_status' => $request->inst2_status,
+                'inst3_amount' => $request->inst3_amount ?: null,
+                'inst3_date'   => $request->inst3_date ?: null,
+                'inst3_status' => $request->inst3_status,
+                'inst4_amount' => $request->inst4_amount ?: null,
+                'inst4_date'   => $request->inst4_date ?: null,
+                'inst4_status' => $request->inst4_status,
+                'inst5_amount' => $request->inst5_amount ?: null,
+                'inst5_date'   => $request->inst5_date ?: null,
+                'inst5_status' => $request->inst5_status,
+            ]
+        );
+
+        return redirect()
+            ->route('fees.student', ['class' => $class, 'student' => $studentId])
+            ->with('success', 'Fees updated successfully for ' . $student->name);
+    }
+
+    // ── Resource methods (required by Route::resource) ──────────
+
+    public function create()
+    {
+        // Redirect to index — we no longer use this
+        return redirect()->route('fees.index');
+    }
+
+    public function store(Request $request)
+    {
+        return redirect()->route('fees.index');
+    }
+
+    public function show($id)
+    {
+        return redirect()->route('fees.index');
+    }
+
+    public function edit($id)
+    {
+        return redirect()->route('fees.index');
+    }
+
+    public function update(Request $request, $id)
+    {
+        return redirect()->route('fees.index');
+    }
+
+    public function destroy($id)
+    {
+        $fee = Fee::findOrFail($id);
+        $fee->delete();
+        return redirect()->route('fees.index')->with('success', 'Fee record deleted.');
+    }
+
+    // ── Old custom routes (kept so nothing breaks) ───────────────
+
+    public function storeClassWise(Request $request, $class)
+    {
+        return redirect()->route('fees.class', $class);
+    }
 
     public function editStatus(Fee $fee)
-{
-    return view('fees.edit-status', compact('fee'));
-}
+    {
+        return redirect()->route('fees.index');
+    }
 
-// update status
-public function updateStatus(Request $request, Fee $fee)
-{
-    $request->validate([
-        'status' => 'required'
-    ]);
-
-    $fee->update([
-        'status' => $request->status
-    ]);
-
-    return redirect()
-        ->back()
-        ->with('success', 'Fee status updated successfully');
-}
-
+    public function updateStatus(Request $request, Fee $fee)
+    {
+        return redirect()->route('fees.index');
+    }
 }
