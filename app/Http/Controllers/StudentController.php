@@ -19,7 +19,7 @@ class StudentController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'class' => 'required|numeric',
+            'class' => 'required|string|max:50',
             'roll_no' => 'required|string|max:50',
             'phone' => 'required|string|max:20',
 
@@ -32,7 +32,7 @@ class StudentController extends Controller
             'religion' => 'nullable|string|max:100',
             'citizenship' => 'nullable|string|max:100',
 
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:512',
+            'photo' => 'required|image|mimes:jpg,jpeg,png,webp|max:512',
         ]);
 
         $data = $request->only([

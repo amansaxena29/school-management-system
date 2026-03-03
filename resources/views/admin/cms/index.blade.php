@@ -122,7 +122,7 @@
 .cms-header h1 {
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2rem, 4vw, 2.8rem);
-    font-weight: 700; color: var(--text-hi);
+    font-weight: 700; color: #ec930d;
     letter-spacing: -0.5px; margin-bottom: 6px;
 }
 .cms-header p { color: black; }

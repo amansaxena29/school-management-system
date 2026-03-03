@@ -195,7 +195,7 @@
     font-weight: 700;
     line-height: 1.0;
     letter-spacing: -1px;
-    color: var(--text-hi);
+    color: #ec930d;
     margin-bottom: 10px;
 }
 
@@ -216,7 +216,7 @@
 
 .hero-sub {
     font-size: 1.15rem;
-    color: var(--text-mid);
+    color: #024b6d;
     line-height: 1.75;
     max-width: 520px;
     margin: 28px 0 48px;
@@ -425,7 +425,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: clamp(2.4rem, 3.5vw, 3.2rem);
     font-weight: 600;
-    color: var(--text-hi);
+    color: #ec930d;
     line-height: 1.1;
 }
 

@@ -79,7 +79,7 @@
         <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">🏠 Dashboard</a>
         <a href="{{ route('students.index') }}" class="{{ request()->routeIs('students.*') ? 'active' : '' }}">🎒 Students</a>
         <a href="{{ route('teachers.index') }}" class="{{ request()->routeIs('teachers.*') ? 'active' : '' }}">👩‍🏫 Teachers</a>
-        <a href="{{ route('fees.index') }}" class="{{ request()->routeIs('fees.*') ? 'active' : '' }}">💰 Fees</a>
+        {{-- <a href="{{ route('fees.index') }}" class="{{ request()->routeIs('fees.*') ? 'active' : '' }}">💰 Fees</a> --}}
         <a href="{{ url('/attendance') }}" class="{{ request()->is('attendance*') ? 'active' : '' }}">📋 Attendances</a>
         <a href="{{ route('exams.index') }}"class="{{ request()->routeIs('exams.*') ? 'active' : '' }}"> 📝Examinations</a>
         {{-- <a href="{{ route('results.index') }}" class="{{ request()->routeIs('results.*') ? 'active' : '' }}">Results</a> --}}

@@ -217,40 +217,60 @@ public function examEntry($type, $class, $studentId)
     ));
 }
 
-public function examStore(\Illuminate\Http\Request $request)
-{
-    $studentId = $request->student_id;
-    $examName  = $request->exam_name;
-    $year      = $request->year;
+    public function examStore(\Illuminate\Http\Request $request)
+    {
+        $studentId = $request->student_id;
+        $examName  = $request->exam_name;
+        $year      = $request->year;
 
-    $result = \App\Models\Result::updateOrCreate(
-        [
-            'student_id' => $studentId,
-            'exam_name'  => $examName,
-            'year'       => $year,
-        ],
-        [
-            'is_published' => $request->has('is_published') ? 1 : 0,
-        ]
-    );
+        $result = \App\Models\Result::updateOrCreate(
+            [
+                'student_id' => $studentId,
+                'exam_name'  => $examName,
+                'year'       => $year,
+            ],
+            [
+                'is_published' => $request->has('is_published') ? 1 : 0,
+            ]
+        );
 
-    // Delete old subjects and re-insert
-    $result->subjects()->delete();
+        // Delete old subjects and re-insert
+        $result->subjects()->delete();
 
-    if ($request->subjects) {
-        foreach ($request->subjects as $sub) {
-            if (!empty($sub['name'])) {
-                $result->subjects()->create([
-                    'subject'   => $sub['name'],
-                    'marks'     => $sub['marks'] ?? 0,
-                    'max_marks' => $sub['max'] ?? 100,
-                    'grade'     => $sub['grade'] ?? null,
-                ]);
+        $total    = 0;
+        $maxTotal = 0;
+
+        if ($request->subjects) {
+            foreach ($request->subjects as $sub) {
+                if (!empty($sub['name'])) {
+                    $marks    = (int)($sub['marks'] ?? 0);
+                    $maxMarks = (int)($sub['max'] ?? 100);
+
+                    $total    += $marks;
+                    $maxTotal += $maxMarks;
+
+                    $result->subjects()->create([
+                        'subject'   => $sub['name'],
+                        'marks'     => $marks,
+                        'max_marks' => $maxMarks,
+                        'grade'     => $sub['grade'] ?? null,
+                    ]);
+                }
             }
         }
-    }
 
-    return redirect()->route('teacher.exams.students', [$examName, $request->input('class', 1)])
-                     ->with('success', 'Marks saved successfully!');
-}
+        // ✅ Calculate and save percentage + status
+        $percentage = $maxTotal > 0 ? round(($total / $maxTotal) * 100, 2) : 0;
+
+        $result->update([
+            'total_marks' => $total,
+            'max_marks'   => $maxTotal,
+            'percentage'  => $percentage,
+            'status'      => $percentage >= 33 ? 'Pass' : 'Fail',
+        ]);
+
+        return redirect()
+            ->route('teacher.exams.students', [$examName, $request->input('class', 1)])
+            ->with('success', 'Marks saved successfully!');
+    }
 }

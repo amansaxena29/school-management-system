@@ -52,15 +52,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::resource('students', StudentController::class);
-    Route::get('/students/class/{class}', [StudentController::class, 'classWise'])
+     Route::get('/students/class/{class}', [StudentController::class, 'classWise'])
     ->name('students.class');
+    Route::resource('students', StudentController::class);
+
 
 
     //  Route::get('/students', [StudentController::class, 'index'])->name('students.index');
     // Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     // Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
-     Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
+   //  Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
 
 
 
